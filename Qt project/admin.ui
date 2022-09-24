@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Admin</class>
+ <widget class="QMainWindow" name="Admin">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>584</width>
+    <height>408</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Administrator</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>584</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionSales_Report">
+   <property name="text">
+    <string>Sales Report</string>
+   </property>
+  </action>
+  <action name="actionPurchases_Char">
+   <property name="text">
+    <string>Purchases Char</string>
+   </property>
+  </action>
+  <action name="actionPurchases_Chart">
+   <property name="text">
+    <string>Purchases Chart</string>
+   </property>
+  </action>
+  <action name="actionMember_Purchases">
+   <property name="text">
+    <string>Member Purchases</string>
+   </property>
+  </action>
+  <action name="actionManage_Inventory">
+   <property name="text">
+    <string>Manage Inventory</string>
+   </property>
+  </action>
+  <action name="actionItem_List">
+   <property name="text">
+    <string>Inventory List</string>
+   </property>
+  </action>
+  <action name="actionItem_Search">
+   <property name="text">
+    <string>Item Search</string>
+   </property>
+  </action>
+  <action name="actionManage_Members">
+   <property name="text">
+    <string>Manage Members</string>
+   </property>
+  </action>
+  <action name="actionMember_Search">
+   <property name="text">
+    <string>Member Search</string>
+   </property>
+  </action>
+  <action name="actionUpgrade_Downgrade_List">
+   <property name="text">
+    <string>Upgrade/Downgrade List</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
