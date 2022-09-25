@@ -12,19 +12,16 @@ SOURCES += \
     admin.cpp \
     logindialog.cpp \
     main.cpp \
-    main.cpp \
     user.cpp
 
 HEADERS += \
     admin.h \
     logindialog.h \
-    main.h \
     picosha2.h \
     user.h
 
 FORMS += \
     admin.ui \
-    main.ui \
     user.ui
 
 # Default rules for deployment.
