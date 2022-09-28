@@ -34,8 +34,7 @@ private:
     QDialogButtonBox* buttons;
 
     void setUpGUI();
-
-    user* user = NULL;
+    user* userWindow = NULL;
     Admin* adminWindow = NULL;
 
 public:

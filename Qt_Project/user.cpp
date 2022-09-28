@@ -24,6 +24,8 @@ user::~user()
     delete ui;
 }
 
+void user::on_berlinPushButton_clicked(){}
+
 void user::on_distanceAndFoodPushButton_clicked()
 {
     QSqlDatabase myDb;

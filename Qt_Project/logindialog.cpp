@@ -118,8 +118,8 @@ void LoginDialog::slotAcceptLogin(){
         }
         else{
             qDebug().noquote() << "Logging in as a user";
-            user = new class::user;
-            user->show();
+            userWindow = new class::user;
+            userWindow->show();
         }
 
         this->close();
