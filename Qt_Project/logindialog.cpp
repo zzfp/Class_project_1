@@ -75,11 +75,24 @@ void LoginDialog::slotAcceptLogin(){
     QString notFound = "Profile not found, check login information";
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
 
-    db.setDatabaseName("./mydb.sqlite"); //Need login db formatted like (username) (salted hash of password) (admin bool[MAY REMOVE]) (salt[5 random chars])
+    db.setDatabaseName("./Project.db"); //Need login db formatted like (username) (salted hash of password) (admin bool[MAY REMOVE]) (salt[5 random chars])
                                 //ask if questions about above
                             //C mentioned dynamic way to source db file, need this or I will kill myself
 
-    db.open();                                                                  //the .db file should be kept within the repository for now
+    if (db.open())          //the .db file should be kept within the repository for now
+    {
+        qDebug().noquote() << "db found and open";
+
+        // for the time being, while the passwords are bland and unsalted, admin window will open up when you click on login
+        userWindow = new class::user;
+        userWindow->show();
+        this->close();
+
+    }
+    else
+    {
+        qDebug().noquote() << "db not found";
+    }
 
     QString username = editUsername->text(); //pulls the values from the text edit lines
     QString password = editPassword->text();
@@ -106,6 +119,7 @@ void LoginDialog::slotAcceptLogin(){
 
     bool admin = record.value(2).toBool();
     //admin = 0;//just for testing purposes
+
 
     if (QString::compare(hashToComp,saltedHash,Qt::CaseSensitive) == 0){
             //username == "user"){ //need to uncomment out to test for members instead of admin
