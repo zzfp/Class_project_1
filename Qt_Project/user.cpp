@@ -45,10 +45,10 @@ void user::on_distanceAndFoodPushButton_clicked()
     {
         queryModel = new QSqlQueryModel();
         queryModel2 = new QSqlQueryModel();
-        queryModel ->setQuery("SELECT * FROM distanceSheet ORDER BY Distance");
+        queryModel ->setQuery("SELECT distanceSheet.Starting_City as 'Starting City',distanceSheet.Ending_City as 'Ending City',distanceSheet.Distance FROM distanceSheet ORDER BY Distance");
         ui->distanceTableView->setModel(queryModel);
 
-        queryModel2 -> setQuery("SELECT * FROM foodSheet ORDER BY foodSheet.City");
+        queryModel2 -> setQuery("SELECT foodSheet.City,foodSheet.Traditional_Food_Item as 'Traditional Food Item',foodSheet.Cost FROM foodSheet ORDER BY foodSheet.City");
         ui->foodTableView->setModel(queryModel2);
     }
 
