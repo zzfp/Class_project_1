@@ -28,6 +28,7 @@ private:
     Ui::user *ui;
     QSqlDatabase myDb;
     QSqlQueryModel *queryModel;
+    QSqlQueryModel *queryModel2;
 };
 
 #endif // USER_H

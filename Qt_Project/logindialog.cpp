@@ -75,8 +75,7 @@ void LoginDialog::slotAcceptLogin(){
     QString notFound = "Profile not found, check login information";
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
 
-    db.setDatabaseName("./Project.db"); //Need login db formatted like (username) (salted hash of password) (admin bool[MAY REMOVE]) (salt[5 random chars])
-                                //ask if questions about above
+    db.setDatabaseName("C:/Users/zacal/CS1D/trip_planner_repo/Class_project_1/Qt_Project/Project.db");
                             //C mentioned dynamic way to source db file, need this or I will kill myself
 
     if (db.open())          //the .db file should be kept within the repository for now
@@ -84,9 +83,9 @@ void LoginDialog::slotAcceptLogin(){
         qDebug().noquote() << "db found and open";
 
         // for the time being, while the passwords are bland and unsalted, admin window will open up when you click on login
-        userWindow = new class::user;
-        userWindow->show();
-        this->close();
+        //userWindow = new class::user;
+        //userWindow->show();
+        //this->close();
 
     }
     else

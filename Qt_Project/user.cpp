@@ -5,17 +5,6 @@ user::user(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::user)
 {
-    if(QSqlDatabase::contains("qt_sql_default_connection"))
-    {
-        myDb = QSqlDatabase::database("qt_sql_default_connection");
-    }
-    else
-    {
-        myDb = QSqlDatabase::addDatabase("QSQLITE");
-    }
-
-    myDb.setDatabaseName("./mydb.sqlite");
-    myDb.open();
     ui->setupUi(this);
 }
 
@@ -39,6 +28,14 @@ void user::on_distanceAndFoodPushButton_clicked()
         myDb = QSqlDatabase::addDatabase("QSQLITE");
     }
 
+    myDb.setDatabaseName("C:/Users/zacal/CS1D/trip_planner_repo/Class_project_1/Qt_Project/Project.db");
+    if (myDb.open()){
+        qDebug().noquote() << "db found and open";
+    }
+    else{
+        qDebug().noquote() << "db not found";
+    }
+
     ui->distanceTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->distanceTableView->setAlternatingRowColors(true);
     ui->foodTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -47,11 +44,12 @@ void user::on_distanceAndFoodPushButton_clicked()
     if (myDb.open())
     {
         queryModel = new QSqlQueryModel();
-        queryModel ->setQuery("SELECT field1 AS 'STARTING CITY', field2 AS 'END CITY', field3 AS 'DISTANCE' FROM distanceSheet ORDER BY field1 DESC, field3");
+        queryModel2 = new QSqlQueryModel();
+        queryModel ->setQuery("SELECT * FROM distanceSheet ORDER BY Distance");
         ui->distanceTableView->setModel(queryModel);
 
-        queryModel -> setQuery("SELECT field1 AS 'CITY', field2 AS 'TRADITIONAL FOOD ITEM', field3 AS 'COST' FROM foodSheet ORDER BY field1 DESC, field3");
-        ui->foodTableView->setModel(queryModel);
+        queryModel2 -> setQuery("SELECT * FROM foodSheet ORDER BY foodSheet.City");
+        ui->foodTableView->setModel(queryModel2);
     }
 
 }
