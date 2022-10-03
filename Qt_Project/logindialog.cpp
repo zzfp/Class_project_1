@@ -81,12 +81,6 @@ void LoginDialog::slotAcceptLogin(){
     if (db.open())          //the .db file should be kept within the repository for now
     {
         qDebug().noquote() << "db found and open";
-
-        // for the time being, while the passwords are bland and unsalted, admin window will open up when you click on login
-        //userWindow = new class::user;
-        //userWindow->show();
-        //this->close();
-
     }
     else
     {
