@@ -10,12 +10,14 @@ CONFIG += c++11
 
 SOURCES += \
     admin.cpp \
+    euromap.cpp \
     logindialog.cpp \
     main.cpp \
     user.cpp
 
 HEADERS += \
     admin.h \
+    euromap.h \
     logindialog.h \
     picosha2.h \
     user.h
