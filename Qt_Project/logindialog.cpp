@@ -75,7 +75,7 @@ void LoginDialog::slotAcceptLogin(){
     QString notFound = "Profile not found, check login information";
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
 
-    db.setDatabaseName("C:/Users/zacal/CS1D/trip_planner_repo/Class_project_1/Qt_Project/Project.db");
+    db.setDatabaseName("/home/zksq/Public/Projects/Euro_vacation/Qt_Project/Project.db");
                             //C mentioned dynamic way to source db file, need this or I will kill myself
 
     if (db.open())          //the .db file should be kept within the repository for now

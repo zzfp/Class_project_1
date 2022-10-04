@@ -12,7 +12,7 @@ EuroMap::EuroMap(){
         myDb = QSqlDatabase::addDatabase("QSQLITE");
     }
 
-    myDb.setDatabaseName("C:/Users/zacal/CS1D/trip_planner_repo/Class_project_1/Qt_Project/Project.db");
+    myDb.setDatabaseName("/home/zksq/Public/Projects/Euro_vacation/Qt_Project/Project.db");
     if (myDb.open()){
         qDebug().noquote() << "db found and open";
     }
