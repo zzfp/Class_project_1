@@ -28,6 +28,7 @@ EuroMap::EuroMap(){
     while (query.next()){
         city_names.push_back(query.value(0).toString());
     }
+    qDebug().noquote() << "city names fetched";
     num_of_cities = int(city_names.size());
     for (int i=0;i<num_of_cities;i++){
         qDebug().noquote() << city_names[i];
@@ -37,6 +38,7 @@ EuroMap::EuroMap(){
         cities.push_back(new City);
         cities[i]->name = city_names[i].toStdString();
     }
+    qDebug().noquote() << "Cities vector filled";
 
     for (int i=0;i<num_of_cities;i++){
         query.prepare("SELECT Ending_City,Distance FROM distanceSheet WHERE Starting_City = (:cityname) ORDER BY Distance");
@@ -50,7 +52,9 @@ EuroMap::EuroMap(){
                 }
             }
         }
+        qDebug().noquote() << QString::fromStdString(cities[i]->name);
     }
+    qDebug().noquote() << "All city objects built";
 };
 
 void EuroMap::full_map_from_city(City Start){
@@ -69,9 +73,11 @@ void EuroMap::full_map_from_city(City Start){
                     current = current->city_signs[i];
                     break;
                 }
-
             }
             }
+        }
+        for (int printloop=0;printloop<=int(visited.capacity());printloop++){
+            qDebug().noquote() << QString::fromStdString(visited[printloop].name);
         }
 
 }
