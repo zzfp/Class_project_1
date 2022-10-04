@@ -16,6 +16,7 @@ user::~user()
 
 void user::on_berlinPushButton_clicked(){
     EuroMap map;
+    map.full_map_from_city("Berlin");
 }
 
 void user::on_distanceAndFoodPushButton_clicked()

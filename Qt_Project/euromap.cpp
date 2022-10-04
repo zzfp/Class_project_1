@@ -55,11 +55,22 @@ EuroMap::EuroMap(){
         qDebug().noquote() << QString::fromStdString(cities[i]->name);
     }
     qDebug().noquote() << "All city objects built";
+    for (int j=0;j<num_of_cities-2;j++){
+        qDebug().noquote() << QString::fromStdString(cities[j]->name);
+        for (int i=0;i<num_of_cities-2;i++){
+            qDebug().noquote() << QString::fromStdString(cities[j]->city_signs[i]->name) << cities[j]->distances[i];
+        }
+    }
 };
 
-void EuroMap::full_map_from_city(City Start){
+void EuroMap::full_map_from_city(QString Start){
         bool already;
-        City* current = &Start;
+        City* current;
+        for (int i=0;i<num_of_cities-1;i++){
+            if (cities[i]->name == Start.toStdString()){
+                current = cities[i];
+            }
+        }
         for (int count = 0;count<num_of_cities;count++){
             for (int i=0;i<num_of_cities;i++){
                 already = false;
