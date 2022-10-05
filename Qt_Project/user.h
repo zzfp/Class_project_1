@@ -24,11 +24,19 @@ private slots:
 
     void on_distanceAndFoodPushButton_clicked();
 
+    void on_beginTripPushButton_clicked();
+
+    void on_addItemPushButton_clicked();
+
+    void on_nextCityPushButton_clicked();
+    void on_searchFoodPushButton_clicked();
+
 private:
     Ui::user *ui;
     QSqlDatabase myDb;
     QSqlQueryModel *queryModel;
     QSqlQueryModel *queryModel2;
+    int count = 1;
 };
 
 #endif // USER_H

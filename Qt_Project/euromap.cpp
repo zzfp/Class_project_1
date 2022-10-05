@@ -12,7 +12,7 @@ EuroMap::EuroMap(){
         myDb = QSqlDatabase::addDatabase("QSQLITE");
     }
 
-    myDb.setDatabaseName("C:/Users/zacal/CS1D/trip_planner_repo/Class_project_1/Qt_Project/Project.db");
+    myDb.setDatabaseName("./Project.db");
     if (myDb.open()){
         qDebug().noquote() << "db found and open";
     }
@@ -78,7 +78,7 @@ void EuroMap::full_map_from_city(QString Start){
         {
             myDb = QSqlDatabase::addDatabase("QSQLITE");
         }
-        myDb.setDatabaseName("C:/Users/zacal/CS1D/trip_planner_repo/Class_project_1/Qt_Project/Project.db");
+        myDb.setDatabaseName("./Project.db");
         if (myDb.open()){
             qDebug().noquote() << "db found and open";
         }
