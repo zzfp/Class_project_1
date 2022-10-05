@@ -20,6 +20,10 @@ public:
 
 private slots:
 
+    void on_addCityButton_clicked();
+
+   // void on_cityTable_cellActivated(int row, int column);
+
 private:
     Ui::Admin *ui;
 };
