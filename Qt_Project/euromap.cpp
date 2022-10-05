@@ -86,7 +86,7 @@ void EuroMap::full_map_from_city(QString Start){
             qDebug().noquote() << "db not found";
         }
         QSqlQuery query(myDb);
-        query.prepare("INSERT INTO Berlin_Trip VALUES ('Berlin',0)");
+        //query.prepare("INSERT INTO Berlin_Trip VALUES ('Berlin',0)");
         std::vector<QString> city_names;
         for (int i=0;i<num_of_cities-1;i++){
             if (cities[i]->name == Start.toStdString()){
@@ -94,7 +94,7 @@ void EuroMap::full_map_from_city(QString Start){
                 qDebug().noquote() << QString::fromStdString(current->name);
             }
         }
-        query.exec();
+        //query.exec();
         visited.push_back(*current);
         for (int count = 0;count<num_of_cities-2;count++){
             for (int i=0;i<num_of_cities-1;i++){
@@ -115,11 +115,11 @@ void EuroMap::full_map_from_city(QString Start){
 
             }
         }
-        for (int i=1;i<=int(visited.capacity());i++){
+        /*for (int i=1;i<=int(visited.capacity());i++){ //not working correctly rn
             query.prepare("INSERT INTO Berlin_Trip VALUES ((:City),(:distance))");
             query.bindValue(":City",QString::fromStdString(visited[i].name));
             query.bindValue(":distance",distances_travelled[i]);
             query.exec();
-        } //not working correctly atm
+        }*/
 
 }
