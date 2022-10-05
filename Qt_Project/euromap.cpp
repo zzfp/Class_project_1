@@ -12,7 +12,7 @@ EuroMap::EuroMap(){
         myDb = QSqlDatabase::addDatabase("QSQLITE");
     }
 
-    myDb.setDatabaseName("/home/zksq/Public/Projects/Euro_vacation/Qt_Project/Project.db");
+    myDb.setDatabaseName("C:/Users/zacal/CS1D/trip_planner_repo/Class_project_1/Qt_Project/Project.db");
     if (myDb.open()){
         qDebug().noquote() << "db found and open";
     }
@@ -61,34 +61,65 @@ EuroMap::EuroMap(){
             qDebug().noquote() << QString::fromStdString(cities[j]->city_signs[i]->name) << cities[j]->distances[i];
         }
     }
+    distances_travelled.push_back(0);
 };
 
 void EuroMap::full_map_from_city(QString Start){
         bool already;
         City* current;
+        QSqlDatabase myDb;
+        int distance=0;
+
+        if(QSqlDatabase::contains("qt_sql_default_connection"))
+        {
+            myDb = QSqlDatabase::database("qt_sql_default_connection");
+        }
+        else
+        {
+            myDb = QSqlDatabase::addDatabase("QSQLITE");
+        }
+        myDb.setDatabaseName("C:/Users/zacal/CS1D/trip_planner_repo/Class_project_1/Qt_Project/Project.db");
+        if (myDb.open()){
+            qDebug().noquote() << "db found and open";
+        }
+        else{
+            qDebug().noquote() << "db not found";
+        }
+        QSqlQuery query(myDb);
+        query.prepare("INSERT INTO Berlin_Trip VALUES ('Berlin',0)");
+        std::vector<QString> city_names;
         for (int i=0;i<num_of_cities-1;i++){
             if (cities[i]->name == Start.toStdString()){
                 current = cities[i];
+                qDebug().noquote() << QString::fromStdString(current->name);
             }
         }
-        for (int count = 0;count<num_of_cities;count++){
-            for (int i=0;i<num_of_cities;i++){
+        query.exec();
+        visited.push_back(*current);
+        for (int count = 0;count<num_of_cities-2;count++){
+            for (int i=0;i<num_of_cities-1;i++){
                 already = false;
                 for (int j=0;j<int(visited.capacity());j++){
                     if (current->city_signs[i]->name ==visited[j].name){
                         already = true;
                     }
+                }
                 if (!already){
                     visited.push_back(*current->city_signs[i]);
-                    distance_travelled += current->distances[i];
+                    distance += current->distances[i];
+                    distances_travelled.push_back(distance);
                     current = current->city_signs[i];
+                    qDebug().noquote() << "unvisited found" << QString::fromStdString(current->name) << " Distance: " << distance;
                     break;
                 }
-            }
+
             }
         }
-        for (int printloop=0;printloop<=int(visited.capacity());printloop++){
-            qDebug().noquote() << QString::fromStdString(visited[printloop].name);
-        }
+        for (int i=1;i<=int(visited.capacity());i++){
+            query.prepare("INSERT INTO Berlin_Trip VALUES ((:City),(:distance))");
+            query.bindValue(":City",QString::fromStdString(visited[i].name));
+            query.bindValue(":distance",distances_travelled[i]);
+            query.exec();
+        } //not working correctly atm
 
 }

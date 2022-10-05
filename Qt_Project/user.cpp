@@ -16,7 +16,7 @@ user::~user()
 
 void user::on_berlinPushButton_clicked(){
     EuroMap map;
-    map.full_map_from_city("Berlin");
+    //map.full_map_from_city("Berlin"); worked once, need troubleshooting
 }
 
 void user::on_distanceAndFoodPushButton_clicked()
@@ -32,7 +32,7 @@ void user::on_distanceAndFoodPushButton_clicked()
         myDb = QSqlDatabase::addDatabase("QSQLITE");
     }
 
-    myDb.setDatabaseName("/home/zksq/Public/Projects/Euro_vacation/Qt_Project/Project.db");
+    myDb.setDatabaseName("C:/Users/zacal/CS1D/trip_planner_repo/Class_project_1/Qt_Project/Project.db");
     if (myDb.open()){
         qDebug().noquote() << "db found and open";
     }

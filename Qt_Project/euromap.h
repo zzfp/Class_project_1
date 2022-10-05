@@ -14,7 +14,7 @@ class EuroMap
 {
     std::vector<City*> cities;
     std::vector<City> visited;
-    int distance_travelled;
+    std::vector<int> distances_travelled;
     int num_of_cities;
 public:
     EuroMap();
