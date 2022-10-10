@@ -31,6 +31,8 @@ private slots:
     void on_nextCityPushButton_clicked();
     void on_searchFoodPushButton_clicked();
 
+    void on_Test_clicked();
+
 private:
     Ui::user *ui;
     QSqlDatabase myDb;

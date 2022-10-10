@@ -16,9 +16,6 @@ user::~user()
 
 void user::on_berlinPushButton_clicked()
 {
-    EuroMap map;
-    map.full_map_from_city("Berlin");
-
     QSqlQueryModel* qryModel = new QSqlQueryModel();
 
     ui->travelStackedWidget->setCurrentIndex(1);
@@ -292,5 +289,12 @@ void user::on_searchFoodPushButton_clicked()
     ui->foodTableView->setAlternatingRowColors(true);
     ui->foodTableView->setModel(foodQryModel);
 
+}
+
+
+void user::on_Test_clicked()
+{
+    EuroMap map;
+    map.full_map_from_city("Rome");
 }
 
