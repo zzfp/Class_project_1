@@ -16,7 +16,24 @@ user::~user()
 
 void user::on_berlinPushButton_clicked()
 {
+    QSqlDatabase myDb;
+
+    if(QSqlDatabase::contains("qt_sql_default_connection"))
+    {
+        myDb = QSqlDatabase::database("qt_sql_default_connection");
+    }
+    else
+    {
+        myDb = QSqlDatabase::addDatabase("QSQLITE");
+    }
+
+    QSqlQuery *prepQuery = new QSqlQuery(myDb);
     QSqlQueryModel* qryModel = new QSqlQueryModel();
+
+    prepQuery -> exec("DELETE FROM Berlin_trip");
+
+    EuroMap map;
+    map.full_map_from_city("Berlin", 11);
 
     ui->travelStackedWidget->setCurrentIndex(1);
 
@@ -38,14 +55,6 @@ void user::on_distanceAndFoodPushButton_clicked()
     else
     {
         myDb = QSqlDatabase::addDatabase("QSQLITE");
-    }
-
-    myDb.setDatabaseName("./Project.db");
-    if (myDb.open()){
-        qDebug().noquote() << "db found and open";
-    }
-    else{
-        qDebug().noquote() << "db not found";
     }
 
     ui->distanceTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -295,6 +304,6 @@ void user::on_searchFoodPushButton_clicked()
 void user::on_Test_clicked()
 {
     EuroMap map;
-    map.full_map_from_city("Rome");
+    map.full_map_from_city("Paris", 11);
 }
 
