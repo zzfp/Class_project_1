@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     admin.cpp \
+    customtrip.cpp \
     euromap.cpp \
     logindialog.cpp \
     main.cpp \
@@ -17,6 +18,7 @@ SOURCES += \
 
 HEADERS += \
     admin.h \
+    customtrip.h \
     euromap.h \
     logindialog.h \
     picosha2.h \
@@ -24,6 +26,7 @@ HEADERS += \
 
 FORMS += \
     admin.ui \
+    customtrip.ui \
     user.ui
 
 # Default rules for deployment.

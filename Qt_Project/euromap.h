@@ -18,7 +18,7 @@ class EuroMap
     int num_of_cities;
 public:
     EuroMap();
-    void full_map_from_city(QString Start);
+    void full_map_from_city(QString Start, int numberOfCities);
 
 };
 
