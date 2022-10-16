@@ -291,10 +291,9 @@ void user::on_searchFoodPushButton_clicked()
 
 }
 
-
-void user::on_Test_clicked()
+void user::on_customTripButton_clicked()
 {
-    EuroMap map;
-    map.full_map_from_city("Rome");
+    customWindow = new customTrip;
+    customWindow->show();
 }
 

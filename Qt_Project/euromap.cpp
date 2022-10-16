@@ -134,11 +134,11 @@ void EuroMap::full_map_from_city(QString Start){
 
             }
         }
-        /*for (int i=1;i<=int(visited.capacity());i++){      //not working correctly rn
+        for (int i=1;i<=int(visited.capacity());i++){
             query.prepare("INSERT INTO Berlin_Trip VALUES ((:City),(:distance))");
             query.bindValue(":City",QString::fromStdString(visited[i].name));
             query.bindValue(":distance",distances_travelled[i]);
             query.exec();
-        }*/
-
+            query.next();
+        }
 }

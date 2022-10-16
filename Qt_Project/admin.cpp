@@ -1,5 +1,6 @@
 #include "admin.h"
 #include "ui_admin.h"
+#include "euromap.h"
 #include <QMessageBox>
 Admin::Admin(QWidget *parent) :
     QMainWindow(parent),
