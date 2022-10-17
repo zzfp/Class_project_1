@@ -103,7 +103,8 @@ void customTrip::on_finalTripButton_clicked()
         }
     }
     if (current != NULL){
-        for (int count = 0;count<num_cities;count++){
+        order.push_back(*current);
+        for (int count = 1;count<num_cities;count++){
             for (int i=0;i<num_cities;i++){
                 already = false;
                 for (int j=0;j<int(order.capacity());j++){
@@ -120,9 +121,9 @@ void customTrip::on_finalTripButton_clicked()
         }
     }
     for (int i=0;i<int(order.size());i++){
+        qDebug().noquote() << QString::fromStdString(order[i].name);
         query.prepare("INSERT INTO Custom_Trip VALUES ((:City))");
         query.bindValue(":City",QString::fromStdString(order[i].name));
-        qDebug().noquote() << QString::fromStdString(order[i].name);
         query.exec();
         query.next();
     }
