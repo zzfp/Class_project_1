@@ -3,6 +3,7 @@
 #include <QtSql>
 #include <QSqlDatabase>
 #include <vector>
+#include <QString>
 
 struct City{
     std::string name;
@@ -18,7 +19,7 @@ class EuroMap
     int num_of_cities;
 public:
     EuroMap();
-    void full_map_from_city(QString Start, int numberOfCities);
+    void full_map_from_city(QString start, int numberOfCities);
 
 };
 

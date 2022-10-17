@@ -57,13 +57,16 @@ void customTrip::on_acceptButton_clicked()
     query.prepare("SELECT Ending_City FROM distanceSheet WHERE Starting_City = (:city)");
     query.bindValue(":city",ui->citiesComboBox->currentText());
     query.exec();
-    if (query.size() != 0){
+
+    if (query.size() != 0)
+    {
         visited.push_back(ui->citiesComboBox->currentText());
         cityModel->setQuery(std::move(query));
         ui->cityBox->setModel(cityModel);
         ui->errorText->setText("");
     }
-    else{
+    else
+    {
         ui->errorText->setText("Invalid City, please select from the list above");
     }
 }
@@ -78,18 +81,25 @@ void customTrip::on_finalTripButton_clicked()
     std::vector<City*> cities;
     std::vector<City> order;
     int num_cities = int(visited.size());
-    for (int i=0;i<num_cities;i++){
+
+    for (int i=0;i<num_cities;i++)
+    {
         City* temp = new City;
         cities.push_back(temp);
         cities[i]->name = visited[i].toStdString();
     }
+
     QSqlQuery query(myDb);
-    for (int i=0;i<num_cities;i++){
+
+    for (int i=0;i<num_cities;i++)
+    {
         query.prepare("SELECT Ending_City,Distance FROM distanceSheet WHERE Starting_City = (:cityname) ORDER BY Distance");
         query.bindValue(":cityname",visited[i]);
         query.exec();
-        while(query.next()){
-            for (int j=0;j<num_cities;j++){
+        while(query.next())
+        {
+            for (int j=0;j<num_cities;j++)
+            {
                 if (query.value(0).toString() == visited[j]){
                     cities[i]->city_signs.push_back(cities[j]);
                     cities[i]->distances.push_back(query.value(1).toInt());
@@ -97,39 +107,52 @@ void customTrip::on_finalTripButton_clicked()
             }
         }
     }
-    for (int i=0;i<num_cities;i++){
+
+
+    for (int i=0;i<num_cities;i++)
+    {
         if (cities[i]->name == visited[0].toStdString()){
             current = cities[i];
         }
     }
-    if (current != NULL){
+    if (current != NULL)
+    {
         order.push_back(*current);
-        for (int count = 1;count<num_cities;count++){
-            for (int i=0;i<num_cities;i++){
+        for (int count = 1;count<num_cities - 2;count++)
+        {
+            for (int i=0;i<num_cities - 1;i++)
+            {
                 already = false;
-                for (int j=0;j<int(order.capacity());j++){
-                    if (current->city_signs[i]->name == order[j].name){
+                for (int j=0;j<int(order.capacity());j++)
+                {
+                    if (current->city_signs[i]->name == order[j].name)
+                    {
                         already = true;
                     }
                 }
-                if (!already){
+                if (!already)
+                {
                     order.push_back(*current->city_signs[i]);
                     current = current->city_signs[i];
+                    qDebug().noquote() << "unvisited found" << QString::fromStdString(current->name);
                     break;
                 }
             }
         }
     }
-    for (int i=0;i<int(order.size());i++){
+    for (int i=0;i<int(order.size());i++)
+    {
         qDebug().noquote() << QString::fromStdString(order[i].name);
         query.prepare("INSERT INTO Custom_Trip VALUES ((:City))");
         query.bindValue(":City",QString::fromStdString(order[i].name));
         query.exec();
         query.next();
     }
+
     model->setQuery("SELECT City FROM Custom_Trip");
-    ui->cityBox->setModel(model);
     food_model->setQuery("SELECT foodSheet.City,foodSheet.Traditional_Food_Item,foodSheet.Cost FROM foodSheet INNER JOIN Custom_Trip ON Custom_Trip.City==foodSheet.City");
+
+    ui->cityBox->setModel(model);
     ui->foodBox->setModel(food_model);
     ui->cityLabel->setText("Cities to visit");
     ui->foodLabel->setText("Foods to Buy");

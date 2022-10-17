@@ -28,20 +28,9 @@ void user::on_berlinPushButton_clicked()
     }
 
     QSqlQuery *prepQuery = new QSqlQuery(myDb);
-    QSqlQueryModel* qryModel = new QSqlQueryModel();
 
     prepQuery -> exec("DELETE FROM Berlin_trip");
-
-    EuroMap map;
-    map.full_map_from_city("Berlin", 11);
-
     ui->travelStackedWidget->setCurrentIndex(1);
-
-    ui->tripTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->tripTableView->setAlternatingRowColors(true);
-
-    qryModel->setQuery("SELECT City, Distance_Travelled AS'Total Distance Traveled' FROM Berlin_trip");
-    ui->tripTableView->setModel(qryModel);
 }
 
 void user::on_distanceAndFoodPushButton_clicked()
@@ -80,7 +69,6 @@ void user::on_distanceAndFoodPushButton_clicked()
     }
 
 }
-
 
 void user::on_beginTripPushButton_clicked()
 {
@@ -203,7 +191,7 @@ void user::on_addItemPushButton_clicked()
 void user::on_nextCityPushButton_clicked()
 {
 
-    if (count == 10)
+    if (count == nextCityCheck)
     {
        ui->travelStackedWidget->setCurrentIndex(0);
     }
@@ -304,5 +292,120 @@ void user::on_customTripButton_clicked()
 {
     customWindow = new customTrip;
     customWindow->show();
+}
+
+
+void user::on_berlin11CitiesPushButton_clicked()
+{
+    QSqlDatabase myDb;
+
+    if(QSqlDatabase::contains("qt_sql_default_connection"))
+    {
+        myDb = QSqlDatabase::database("qt_sql_default_connection");
+    }
+    else
+    {
+        myDb = QSqlDatabase::addDatabase("QSQLITE");
+    }
+
+    QSqlQueryModel* qryModel = new QSqlQueryModel();
+
+    EuroMap map;
+    map.full_map_from_city("Berlin", 11 );
+    nextCityCheck = 11;
+
+    ui->tripTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tripTableView->setAlternatingRowColors(true);
+
+    qryModel->setQuery("SELECT City, Distance_Travelled AS'Total Distance Traveled' FROM Berlin_trip");
+    ui->tripTableView->setModel(qryModel);
+}
+
+
+void user::on_parisCustomTripPushButton_clicked()
+{
+    QSqlDatabase myDb;
+
+    if(QSqlDatabase::contains("qt_sql_default_connection"))
+    {
+        myDb = QSqlDatabase::database("qt_sql_default_connection");
+    }
+    else
+    {
+        myDb = QSqlDatabase::addDatabase("QSQLITE");
+    }
+
+    QSqlQuery *prepQuery = new QSqlQuery(myDb);
+
+    prepQuery -> exec("DELETE FROM Berlin_trip");
+    ui->travelStackedWidget->setCurrentIndex(3);
+}
+
+
+void user::on_addParisCitiesPushButton_clicked()
+{
+    QSqlDatabase myDb;
+
+    if(QSqlDatabase::contains("qt_sql_default_connection"))
+    {
+        myDb = QSqlDatabase::database("qt_sql_default_connection");
+    }
+    else
+    {
+        myDb = QSqlDatabase::addDatabase("QSQLITE");
+    }
+
+    QSqlQueryModel* qryModel = new QSqlQueryModel();
+
+    int amountOfCities;
+    amountOfCities = ui->numberOfCitiesLineEdit->text().toInt();
+
+    EuroMap map;
+    map.full_map_from_city("Paris", amountOfCities);
+    nextCityCheck = amountOfCities;
+
+    ui->parisTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->parisTableView->setAlternatingRowColors(true);
+
+    qryModel->setQuery("SELECT City, Distance_Travelled AS'Total Distance Traveled' FROM Berlin_trip");
+    ui->parisTableView->setModel(qryModel);
+}
+
+
+void user::on_parisBeginTrip_clicked()
+{
+    QSqlDatabase myDb;
+
+    if(QSqlDatabase::contains("qt_sql_default_connection"))
+    {
+        myDb = QSqlDatabase::database("qt_sql_default_connection");
+    }
+    else
+    {
+        myDb = QSqlDatabase::addDatabase("QSQLITE");
+    }
+
+    QSqlQuery *prepQuery = new QSqlQuery(myDb);
+    QSqlQuery *insertQuery = new QSqlQuery(myDb);
+    QSqlQueryModel* saleQryModel = new QSqlQueryModel();
+
+
+    ui->currentCityTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->currentCityTableView->setAlternatingRowColors(true);
+
+    insertQuery -> prepare("INSERT INTO totalAmountPerCity (City, totalAmountSpent) VALUES (:city, :totalAmountSpent)");
+    insertQuery -> bindValue(":city", "Paris");
+    insertQuery -> bindValue(":totalAmountSpent", 0.0);
+    insertQuery -> exec();
+
+    prepQuery -> prepare("SELECT City, Traditional_Food_Item, Cost From foodSheet WHERE City = :city");
+    prepQuery -> bindValue(":city", "Paris");
+    prepQuery -> exec();
+
+    saleQryModel -> setQuery(std::move(*prepQuery));
+
+    ui->currentCityTableView->setModel(saleQryModel);
+    ui->travelStackedWidget->setCurrentIndex(2);
+    ui->currentCityLineEdit->setText("Current City: Paris");
 }
 

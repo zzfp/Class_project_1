@@ -34,6 +34,14 @@ private slots:
 
     void on_customTripButton_clicked();
 
+    void on_berlin11CitiesPushButton_clicked();
+
+    void on_parisCustomTripPushButton_clicked();
+
+    void on_addParisCitiesPushButton_clicked();
+
+    void on_parisBeginTrip_clicked();
+
 private:
     Ui::user *ui;
     QSqlDatabase myDb;
@@ -42,6 +50,7 @@ private:
     customTrip* customWindow;
 
     int count = 1;
+    int nextCityCheck;
 };
 
 #endif // USER_H
