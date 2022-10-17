@@ -126,8 +126,6 @@ void Admin::on_uploadFile_clicked()
 
                   }
 
-
-
                   req.append(");"); // close the "VALUES([...]" with a ");"
                   query.exec(req);
                   if (!query.exec() )
@@ -137,7 +135,7 @@ void Admin::on_uploadFile_clicked()
                   qDebug() << req;
               }
 
-      refreshTable();
+      refreshCityTable();
 
 
 }
