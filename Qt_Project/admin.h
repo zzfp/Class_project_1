@@ -17,10 +17,12 @@ class Admin : public QMainWindow
 public:
     explicit Admin(QWidget *parent = nullptr);
     ~Admin();
+    void refreshCityTable();
 
 private slots:
 
     void on_addCityButton_clicked();
+    void on_uploadFile_clicked();
 
    // void on_cityTable_cellActivated(int row, int column);
 
