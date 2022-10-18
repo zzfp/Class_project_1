@@ -6,7 +6,6 @@
 #include <QWidget>
 #include <QtSql>
 #include <QSqlDatabase>
-#include "customtrip.h"
 
 namespace Ui {
 class user;
@@ -42,14 +41,20 @@ private slots:
 
     void on_parisBeginTrip_clicked();
 
+    void on_addCustomCityPushButton_clicked();
+
+    void on_finalizeTripCustomCityPushButton_clicked();
+
+    void on_beginTripCustomCityPushButton_clicked();
+
 private:
     Ui::user *ui;
     QSqlDatabase myDb;
     QSqlQueryModel *queryModel;
     QSqlQueryModel *queryModel2;
-    customTrip* customWindow;
 
     int count = 1;
+    int addCity = 0;
     int nextCityCheck;
 };
 
