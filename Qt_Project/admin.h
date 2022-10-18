@@ -26,6 +26,10 @@ private slots:
 
    // void on_cityTable_cellActivated(int row, int column);
 
+    void on_addFoodButton_clicked();
+
+    void on_uploadFile2_clicked();
+
 private:
     Ui::Admin *ui;
 };

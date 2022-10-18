@@ -21,6 +21,16 @@ Admin::Admin(QWidget *parent) :
 
    model->setQuery(std::move(query));
    ui->tableView->setModel(model);
+
+   QSqlQueryModel * model2 = new QSqlQueryModel();
+   QSqlQuery query2(db);
+
+   query2.prepare("SELECT * FROM foodSheet");
+
+   query2.exec();
+
+   model2->setQuery(std::move(query2));
+   ui->tableView2->setModel(model2);
 }
 
 Admin::~Admin()
@@ -45,6 +55,16 @@ void Admin::refreshCityTable()
 
    model->setQuery(std::move(query));
    ui->tableView->setModel(model);
+
+   QSqlQueryModel * model2 = new QSqlQueryModel();
+   QSqlQuery query2(db);
+
+   query2.prepare("SELECT * FROM foodSheet");
+
+   query2.exec();
+
+   model2->setQuery(std::move(query2));
+   ui->tableView2->setModel(model2);
 }
 
 
@@ -95,7 +115,7 @@ void Admin::on_addCityButton_clicked()
 
 void Admin::on_uploadFile_clicked()
 {
-   QFile file("C:/Users/James Flanagan/Class_Project_1/CS1D Fall 2022 European Vacation Project/NewCities.csv");
+   QFile file("./NewCities.txt");
    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
    db.setDatabaseName("./Project.db");//This line and the previous connect to the sqlite database at this file location,
    db.open();
@@ -103,39 +123,125 @@ void Admin::on_uploadFile_clicked()
            qDebug() << file.errorString();
        }
 
-   QSqlQuery query(db);
-
        if (!file.open(QIODevice::ReadOnly)) {
            qDebug() << file.errorString();
        }
-       QTextStream ts (&file);
 
-      while(!ts.atEnd()){
-                  QString req = "INSERT INTO distanceSheet(Starting_City, Ending_City, Distance) VALUES (";
-                  query.prepare("INSERT INTO distanceSheet(Starting_City, Ending_City, Distance) VALUES (:Starting, :Ending, :Distance)");
-                  // split every line
-                  QStringList line = ts.readLine().split(',');
+       QString startString;
+       QString endString;
+       QString distanceString;
 
-                  /*for every values on a line,
-                         append it to the INSERT request*/
-                  for(int i=0; i<line.length(); ++i)
-                  {
+       while(!file.atEnd())
+           {
+               QSqlQuery query;
+               query.prepare("INSERT INTO distanceSheet(Starting_City, Ending_City, Distance) VALUES (:Starting, :Ending, :Distance)");
 
-                          req.append(line.at(i));
-                          req.append(",");
+               startString = file.readLine();
+               endString = file.readLine();
+               distanceString = file.readLine();
 
-                  }
 
-                  req.append(");"); // close the "VALUES([...]" with a ");"
-                  query.exec(req);
-                  if (!query.exec() )
-                  {
-                      QMessageBox::warning(this, "Query Error", "Query not executed");
-                  }
-                  qDebug() << req;
-              }
+               query.bindValue(":Starting", startString);
+               query.bindValue(":Ending", endString);
+               query.bindValue(":Distance", distanceString.toInt());
+               qDebug() << startString << endString << distanceString;
+               query.exec();
+
+               query.lastQuery();
+
+           }
+           file.close();
 
       refreshCityTable();
 
 
 }
+
+void Admin::on_addFoodButton_clicked()
+{
+    QString city = ui->cityLineEdit->text();
+    QString food = ui->endingCityLineEdit->text();
+    QString cost = ui->kilometerLineEdit->text();
+    if (city == "" || food == "" || cost == "")
+      {
+          QMessageBox::warning(this, "Empty field", "One of your fields is empty");
+      }
+      else
+      {
+          QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+          db.setDatabaseName("./Project.db");
+          if (db.open()){
+              qDebug().noquote() << "db found and open";
+          }
+          else{
+              qDebug().noquote() << "db not found";
+          }
+          QSqlQuery query(db);
+
+          query.prepare("INSERT INTO distanceSheet(Starting_City, Ending_City, Distance) VALUES (:Starting, :Ending, :Distance)");
+          query.bindValue(":Starting", city);
+          query.bindValue(":Ending", food);
+          query.bindValue(":Distance", cost);
+
+          if (!query.exec() )
+          {
+              QMessageBox::warning(this, "Query Error", "Query not executed");
+          }
+
+          else
+          {
+              QMessageBox::information(this, "City Successfully Added", "Success");
+
+          }
+
+      }
+
+    refreshCityTable();
+}
+
+
+void Admin::on_uploadFile2_clicked()
+{
+    QFile file("./NewFoods.txt");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("./Project.db");//This line and the previous connect to the sqlite database at this file location,
+    db.open();
+    if (!file.open(QIODevice::ReadOnly)) {
+            qDebug() << file.errorString();
+        }
+
+        if (!file.open(QIODevice::ReadOnly)) {
+            qDebug() << file.errorString();
+        }
+
+        QString cityString;
+        QString foodString;
+        QString costString;
+
+        while(!file.atEnd())
+            {
+                QSqlQuery query;
+                query.prepare("INSERT INTO foodSheet(City, Traditional_Food_Item, Cost) VALUES (:city :food, :cost)");
+
+                cityString = file.readLine();
+                foodString = file.readLine();
+                costString = file.readLine();
+
+
+                query.bindValue(":city", cityString);
+                query.bindValue(":food", foodString);
+                query.bindValue(":cost", costString.toDouble());
+                qDebug() << cityString << foodString << costString;
+                query.exec();
+
+                query.lastQuery();
+
+            }
+            file.close();
+
+       refreshCityTable();
+
+
+ }
+
+
