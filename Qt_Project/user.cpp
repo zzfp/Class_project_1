@@ -1,6 +1,7 @@
 #include "user.h"
 #include "ui_user.h"
 #include "euromap.h"
+#include "customtripmap.h"
 
 user::user(QWidget *parent) :
     QMainWindow(parent),
@@ -82,6 +83,7 @@ void user::on_beginTripPushButton_clicked()
     {
         myDb = QSqlDatabase::addDatabase("QSQLITE");
     }
+
 
     QSqlQuery *prepQuery = new QSqlQuery(myDb);
     QSqlQuery *insertQuery = new QSqlQuery(myDb);
@@ -288,12 +290,6 @@ void user::on_searchFoodPushButton_clicked()
 
 }
 
-void user::on_customTripButton_clicked()
-{
-    customWindow = new customTrip;
-    customWindow->show();
-}
-
 
 void user::on_berlin11CitiesPushButton_clicked()
 {
@@ -407,5 +403,169 @@ void user::on_parisBeginTrip_clicked()
     ui->currentCityTableView->setModel(saleQryModel);
     ui->travelStackedWidget->setCurrentIndex(2);
     ui->currentCityLineEdit->setText("Current City: Paris");
+}
+
+void user::on_customTripButton_clicked()
+{
+       QSqlQueryModel model;
+       QSqlQuery query(myDb);
+       QSqlQuery tripQuery(myDb);
+
+       QSqlQueryModel* cityModel = new QSqlQueryModel();
+       QSqlQueryModel* cityPlanModel = new QSqlQueryModel();
+       QSqlQuery *deleteQuery = new QSqlQuery(myDb);
+
+       deleteQuery->exec("DELETE FROM Berlin_trip");
+       deleteQuery->exec("DELETE FROM totalAmountPerCity");
+       deleteQuery->exec("DELETE FROM travelSale");
+       deleteQuery->exec("DELETE FROM travelSale");
+
+
+       ui->citiesTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+       ui->citiesTableView->setAlternatingRowColors(true);
+       ui->customTripTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+       ui->customTripTableView->setAlternatingRowColors(true);
+
+       query.exec("SELECT DISTINCT Starting_City FROM distanceSheet");
+       tripQuery.exec("SELECT City FROM Custom_Trip");
+
+
+       cityModel->setQuery(std::move(query));
+       cityPlanModel->setQuery(std::move(tripQuery));
+
+       ui->citiesTableView->setModel(cityModel);
+       ui->customTripTableView->setModel(cityPlanModel);
+
+       QSqlRecord record;
+       for(int i=0;i<cityModel->rowCount();i++)
+       {
+           record = cityModel->record(i);
+           ui->citiesComboBox->addItem(record.value(0).toString());
+       }
+
+       ui->travelStackedWidget->setCurrentIndex(4);
+}
+
+void user::on_addCustomCityPushButton_clicked()
+{
+    QString city;
+
+    QSqlQuery *addCityQuery = new QSqlQuery(myDb);
+    QSqlQueryModel* qryModel = new QSqlQueryModel();
+
+    city = ui->citiesComboBox->currentText();
+
+    addCityQuery->prepare("INSERT INTO Custom_Trip (City) VALUES (:city)");
+    addCityQuery->bindValue(":city", city);
+    addCityQuery->exec();
+
+    qryModel->setQuery("SELECT City FROM Custom_Trip");
+
+    ui->customTripTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->customTripTableView->setAlternatingRowColors(true);
+    ui->customTripTableView->setModel(qryModel);
+
+    ui->citiesComboBox->removeItem(ui->citiesComboBox->currentIndex());
+    addCity++;
+
+}
+
+
+void user::on_finalizeTripCustomCityPushButton_clicked()
+{
+    QSqlDatabase myDb;
+
+    if(QSqlDatabase::contains("qt_sql_default_connection"))
+    {
+        myDb = QSqlDatabase::database("qt_sql_default_connection");
+    }
+    else
+    {
+        myDb = QSqlDatabase::addDatabase("QSQLITE");
+    }
+
+    QSqlQuery *addQuery = new QSqlQuery(myDb);
+    QSqlQuery *startingCityQuery = new QSqlQuery(myDb);
+    QSqlQueryModel* qryModel = new QSqlQueryModel();
+    QString startingCity;
+
+    startingCityQuery->exec("SELECT City FROM Custom_Trip");
+    startingCityQuery->next();
+    startingCity = startingCityQuery->value(0).toString();
+
+
+
+    if (addCity != 0)
+    {
+        if (addCity == 1)
+        {
+              addQuery->prepare("INSERT INTO Berlin_Trip VALUES ((:City),(:distance))");
+              addQuery->bindValue(":City", startingCity);
+              addQuery->bindValue(":distance", 0);
+              addQuery->exec();
+              nextCityCheck = addCity;
+        }
+        else
+        {
+            customTripMap map;
+            map.fullMap(startingCity, addCity);
+            nextCityCheck = addCity;
+        }
+
+        ui->customTripTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+        ui->customTripTableView->setAlternatingRowColors(true);
+        qryModel->setQuery("SELECT City, Distance_Travelled AS'Total Distance Traveled' FROM Berlin_trip");
+        ui->customTripTableView->setModel(qryModel);
+
+    }
+    else
+    {
+       //ADD ERROR CHECK
+    }
+}
+
+
+void user::on_beginTripCustomCityPushButton_clicked()
+{
+    QSqlDatabase myDb;
+
+    if(QSqlDatabase::contains("qt_sql_default_connection"))
+    {
+        myDb = QSqlDatabase::database("qt_sql_default_connection");
+    }
+    else
+    {
+        myDb = QSqlDatabase::addDatabase("QSQLITE");
+    }
+
+    QSqlQuery *prepQuery = new QSqlQuery(myDb);
+    QSqlQuery *insertQuery = new QSqlQuery(myDb);
+    QSqlQueryModel* saleQryModel = new QSqlQueryModel();
+    QSqlQuery *startingCityQuery = new QSqlQuery(myDb);
+
+    QString startingCity;
+
+    startingCityQuery->exec("SELECT City FROM Custom_Trip");
+    startingCityQuery->next();
+    startingCity = startingCityQuery->value(0).toString();
+
+
+    ui->currentCityTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->currentCityTableView->setAlternatingRowColors(true);
+
+    insertQuery -> prepare("INSERT INTO totalAmountPerCity (City, totalAmountSpent) VALUES (:city, :totalAmountSpent)");
+    insertQuery -> bindValue(":city", startingCity);
+    insertQuery -> bindValue(":totalAmountSpent", 0.0);
+    insertQuery -> exec();
+
+    prepQuery -> prepare("SELECT City, Traditional_Food_Item, Cost From foodSheet WHERE City = :city");
+    prepQuery -> bindValue(":city", startingCity);
+    prepQuery -> exec();
+
+    saleQryModel -> setQuery(std::move(*prepQuery));
+
+    ui->currentCityTableView->setModel(saleQryModel);
+    ui->travelStackedWidget->setCurrentIndex(2);
+    ui->currentCityLineEdit->setText("Current City: " + startingCity);
 }
 
