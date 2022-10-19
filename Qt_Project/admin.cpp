@@ -17,6 +17,7 @@ Admin::~Admin()
 
 void Admin::on_addCityButton_clicked()
 {
+
    QString startCity = ui->cityLineEdit->text();
    QString endingCity = ui->endingCityLineEdit->text();
    QString distance = ui->kilometerLineEdit->text();
@@ -52,42 +53,102 @@ void Admin::on_addCityButton_clicked()
 
 }
 
-
 void Admin::on_addFoodButton_clicked()
 {
+    QSqlDatabase myDb;
+
+    if(QSqlDatabase::contains("qt_sql_default_connection"))
+    {
+        myDb = QSqlDatabase::database("qt_sql_default_connection");
+    }
+    else
+    {
+        myDb = QSqlDatabase::addDatabase("QSQLITE");
+    }
+
+    QSqlRecord record;
+    QSqlQuery searchQuery(myDb);
+    QSqlQueryModel searchQryModel;
+
     QString city = ui->cityLineEdit2->text();
     QString food = ui->foodLineEdit->text();
+    std::string quantityString;
     QString cost = ui->costLineEdit->text();
+    bool confirmInt;
+    bool confirmString = false;
+
+    quantityString = ui->costLineEdit->text().toStdString();
 
     if (city == "" || food == "" || cost == "")
     {
         QMessageBox::warning(this, "Empty field", "One of your fields is empty");
     }
-
-    QSqlQuery query;
-    QSqlQueryModel* qryModel = new QSqlQueryModel();
-
-    query.prepare("INSERT INTO foodSheet(City, Traditional_Food_Item, Cost) VALUES (:City, :Food, :Cost)");
-    query.bindValue(":City", city);
-    query.bindValue(":Food", food);
-    query.bindValue(":Cost", cost);
-
-    if (!query.exec() )
-    {
-          QMessageBox::warning(this, "Query Error", "Query not executed");
-    }
     else
     {
-          QMessageBox::information(this, "City Successfully Added", "Success");
+        for (char const ch : quantityString)
+        {
+            if(std::isdigit(ch) == 0)
+            {
+                confirmInt = false;
+            }
+            else
+            {
+                confirmInt = true;
+            }
+        }
+        if (confirmInt == true)
+        {
+            searchQuery.exec("SELECT DISTINCT Starting_City FROM distanceSheet");
+            searchQryModel.setQuery(std::move(searchQuery));
+            int i = 0;
+
+            while (i < searchQryModel.rowCount() && !confirmString)
+            {
+                record = searchQryModel.record(i);
+                if (city == record.value(0).toString())
+                {
+                    confirmString = true;
+                }
+                i++;
+            }
+
+            if (confirmString == true)
+            {
+                QSqlQuery query;
+                QSqlQueryModel* qryModel = new QSqlQueryModel();
+
+                query.prepare("INSERT INTO foodSheet(City, Traditional_Food_Item, Cost) VALUES (:City, :Food, :Cost)");
+                query.bindValue(":City", city);
+                query.bindValue(":Food", food);
+                query.bindValue(":Cost", cost);
+
+                if (!query.exec() )
+                {
+                      QMessageBox::warning(this, "Query Error", "Query not executed");
+                }
+                else
+                {
+                      QMessageBox::information(this, "City Successfully Added", "Success");
+                }
+
+                ui->foodTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+                ui->foodTableView->setAlternatingRowColors(true);
+
+                qryModel -> setQuery("SELECT foodSheet.City,foodSheet.Traditional_Food_Item as 'Traditional Food Item',foodSheet.Cost FROM foodSheet ORDER BY foodSheet.City");
+
+                ui->foodTableView->setModel(qryModel);
+            }
+            else
+            {
+                QMessageBox::warning(this, "NOT A CITY", "enter a city");
+            }
+
+        }
+        else
+        {
+            QMessageBox::warning(this, "NOT AN INT", "enter an int into quantity");
+        }
     }
-
-    ui->foodTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->foodTableView->setAlternatingRowColors(true);
-
-    qryModel -> setQuery("SELECT foodSheet.City,foodSheet.Traditional_Food_Item as 'Traditional Food Item',foodSheet.Cost FROM foodSheet ORDER BY foodSheet.City");
-
-    ui->foodTableView->setModel(qryModel);
-
 }
 
 void Admin::on_initStartingCitiesPushButton_clicked()
@@ -143,7 +204,6 @@ void Admin::on_initStartingCitiesPushButton_clicked()
     ui->distanceTableView->setModel(qryModel);
 
 }
-
 
 void Admin::on_initNewCitiesPUshButton_clicked()
 {
@@ -361,76 +421,204 @@ void Admin::on_userWindowPushButton_clicked()
 
 void Admin::on_editFoodButton_clicked()
 {
+    QSqlDatabase myDb;
+
+    if(QSqlDatabase::contains("qt_sql_default_connection"))
+    {
+        myDb = QSqlDatabase::database("qt_sql_default_connection");
+    }
+    else
+    {
+        myDb = QSqlDatabase::addDatabase("QSQLITE");
+    }
+
+    QSqlRecord record;
+    QSqlQuery searchQuery(myDb);
+    QSqlQueryModel searchQryModel;
+    std::string quantityString;
+
     QString city = ui->cityLineEdit2->text();
     QString food = ui->foodLineEdit->text();
     QString cost = ui->costLineEdit->text();
+
+    bool confirmInt;
+    bool confirmString = false;
+
+    quantityString = ui->costLineEdit->text().toStdString();
 
     if (city == "" || food == "" || cost == "")
     {
         QMessageBox::warning(this, "Empty field", "One of your fields is empty");
     }
-
-    QSqlQuery query;
-    QSqlQueryModel* qryModel = new QSqlQueryModel();
-
-    query.prepare("UPDATE foodSheet SET Cost = (:Cost) WHERE City = (:City) AND Traditional_Food_Item = (:Food) ");
-    query.bindValue(":City", city);
-    query.bindValue(":Food", food);
-    query.bindValue(":Cost", cost);
-    query.exec();
-
-    if (!query.exec() )
-    {
-          QMessageBox::warning(this, "Query Error", "Query not executed");
-    }
     else
     {
-          QMessageBox::information(this, "City Successfully Added", "Success");
+        for (char const ch : quantityString)
+        {
+            if(std::isdigit(ch) == 0)
+            {
+                confirmInt = false;
+            }
+            else
+            {
+                confirmInt = true;
+            }
+        }
+        if(confirmInt == true)
+        {
+
+            searchQuery.exec("SELECT DISTINCT Starting_City FROM distanceSheet");
+            searchQryModel.setQuery(std::move(searchQuery));
+            int i = 0;
+
+            while (i < searchQryModel.rowCount() && !confirmString)
+            {
+                record = searchQryModel.record(i);
+                if (city == record.value(0).toString())
+                {
+                    confirmString = true;
+                }
+                i++;
+            }
+
+            if (confirmString == true)
+            {
+                QSqlQuery query;
+                QSqlQueryModel* qryModel = new QSqlQueryModel();
+
+                query.prepare("UPDATE foodSheet SET Cost = (:Cost) WHERE City = (:City) AND Traditional_Food_Item = (:Food) ");
+                query.bindValue(":City", city);
+                query.bindValue(":Food", food);
+                query.bindValue(":Cost", cost);
+                query.exec();
+
+                if (!query.exec() )
+                {
+                      QMessageBox::warning(this, "Query Error", "Query not executed");
+                }
+                else
+                {
+                      QMessageBox::information(this, "City Successfully Added", "Success");
+                }
+
+                ui->foodTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+                ui->foodTableView->setAlternatingRowColors(true);
+
+                qryModel -> setQuery("SELECT foodSheet.City,foodSheet.Traditional_Food_Item as 'Traditional Food Item',foodSheet.Cost FROM foodSheet ORDER BY foodSheet.City");
+
+                ui->foodTableView->setModel(qryModel);
+            }
+            else
+            {
+                QMessageBox::warning(this, "NOT A CITY", "enter a city");
+            }
+        }
+        else
+        {
+             QMessageBox::warning(this, "NOT AN INT", "enter an int into quantity");
+        }
     }
-
-    ui->foodTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->foodTableView->setAlternatingRowColors(true);
-
-    qryModel -> setQuery("SELECT foodSheet.City,foodSheet.Traditional_Food_Item as 'Traditional Food Item',foodSheet.Cost FROM foodSheet ORDER BY foodSheet.City");
-
-    ui->foodTableView->setModel(qryModel);
-
-
 }
 
 
 void Admin::on_deleteFood_clicked()
 {
+    QSqlDatabase myDb;
+
+    if(QSqlDatabase::contains("qt_sql_default_connection"))
+    {
+        myDb = QSqlDatabase::database("qt_sql_default_connection");
+    }
+    else
+    {
+        myDb = QSqlDatabase::addDatabase("QSQLITE");
+    }
+
+    QSqlRecord record;
+    QSqlQuery searchQuery(myDb);
+    QSqlQueryModel searchQryModel;
+
+    QSqlRecord record2;
+    QSqlQuery searchQuery2(myDb);
+    QSqlQueryModel searchQryModel2;
+
     QString city = ui->cityLineEdit2->text();
     QString food = ui->foodLineEdit->text();
+    bool confirmCity = false;
+    bool confirmFood = false;
 
     if (city == "" || food == "")
     {
         QMessageBox::warning(this, "Empty field", "One of your fields is empty");
     }
-
-    QSqlQuery query;
-    QSqlQueryModel* qryModel = new QSqlQueryModel();
-
-    query.prepare("DELETE FROM foodSheet WHERE City = (:City) AND Traditional_Food_Item = (:Food) ");
-    query.bindValue(":City", city);
-    query.bindValue(":Food", food);
-    query.exec();
-
-    if (!query.exec() )
-    {
-          QMessageBox::warning(this, "Query Error", "Query not executed");
-    }
     else
     {
-          QMessageBox::information(this, "City Successfully Added", "Success");
+        searchQuery.exec("SELECT DISTINCT Starting_City FROM distanceSheet");
+        searchQryModel.setQuery(std::move(searchQuery));
+        int i = 0;
+
+        while (i < searchQryModel.rowCount() && !confirmCity)
+        {
+            record = searchQryModel.record(i);
+            if (city == record.value(0).toString())
+            {
+                confirmCity = true;
+            }
+            i++;
+        }
+
+        if (confirmCity == true)
+        {
+            searchQuery2.exec("SELECT DISTINCT Traditional_Food_Item FROM foodSheet");
+            searchQryModel2.setQuery(std::move(searchQuery2));
+            int j = 0;
+
+            while (i < searchQryModel2.rowCount() && !confirmFood)
+            {
+                record2 = searchQryModel2.record(i);
+                if (food == record2.value(0).toString())
+                {
+                    confirmFood = true;
+                    qDebug().noquote() << "in while loop";
+
+                }
+                j++;
+            }
+
+            if (confirmFood == true)
+            {
+                QSqlQuery query;
+                QSqlQueryModel* qryModel = new QSqlQueryModel();
+
+                query.prepare("DELETE FROM foodSheet WHERE City = (:City) AND Traditional_Food_Item = (:Food) ");
+                query.bindValue(":City", city);
+                query.bindValue(":Food", food);
+                query.exec();
+
+                if (!query.exec() )
+                {
+                      QMessageBox::warning(this, "Query Error", "Query not executed");
+                }
+                else
+                {
+                      QMessageBox::information(this, "City Successfully Added", "Success");
+                }
+
+                ui->foodTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+                ui->foodTableView->setAlternatingRowColors(true);
+
+                qryModel -> setQuery("SELECT foodSheet.City,foodSheet.Traditional_Food_Item as 'Traditional Food Item',foodSheet.Cost FROM foodSheet ORDER BY foodSheet.City");
+
+                ui->foodTableView->setModel(qryModel);
+            }
+            else
+            {
+                QMessageBox::warning(this, "WRONG FOOD ITEM", "Enter proper food item");
+            }
+        }
+        else
+        {
+            QMessageBox::warning(this, "WRONG CITY", "Enter proper City");
+        }
     }
-
-    ui->foodTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->foodTableView->setAlternatingRowColors(true);
-
-    qryModel -> setQuery("SELECT foodSheet.City,foodSheet.Traditional_Food_Item as 'Traditional Food Item',foodSheet.Cost FROM foodSheet ORDER BY foodSheet.City");
-
-    ui->foodTableView->setModel(qryModel);
 }
 

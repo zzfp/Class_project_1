@@ -2,6 +2,7 @@
 #include "ui_user.h"
 #include "euromap.h"
 #include "customtripmap.h"
+#include <iostream>
 
 user::user(QWidget *parent) :
     QMainWindow(parent),
@@ -40,7 +41,7 @@ void user::on_distanceAndFoodPushButton_clicked()
         queryModel = new QSqlQueryModel();
         queryModel2 = new QSqlQueryModel();
         prepQuery ->prepare("SELECT Starting_City, Ending_City, Distance FROM distanceSHEET WHERE Starting_City = :city ORDER BY Starting_City DESC, Distance");
-        prepQuery ->bindValue(":city", "Rome");
+        prepQuery ->bindValue(":city", "Berlin");
         prepQuery ->exec();
 
         queryModel -> setQuery(std::move(*prepQuery));
@@ -253,63 +254,120 @@ void user::on_addItemPushButton_clicked()
     QSqlQueryModel* receiptQryModel = new QSqlQueryModel();
     QSqlQueryModel* totalAmountSpentQryModel = new QSqlQueryModel();
 
+    QSqlRecord record;
+    QSqlQuery searchQuery(myDb);
+    QSqlQueryModel searchQryModel;
+
 
     QString totalSaleString;
     QString item;
     QString city;
     int quantity;
+    std::string quantityString;
     double total;
     double itemPrice;
+    bool confirmString = false;
+    bool confirmInt;
 
     item = ui->enterItemLineEdit->text();
-    quantity = ui->quantityItemLineEdit->text().toInt();
+    quantityString = ui->quantityItemLineEdit->text().toStdString();
 
-    prepQuery -> prepare("SELECT Cost FROM foodSheet WHERE Traditional_Food_Item = :item");
-    prepQuery -> bindValue(":item", item);
-    prepQuery -> exec();
-    prepQuery -> next();
 
-    itemPrice = prepQuery->value(0).toDouble();
+    for (char const ch : quantityString)
+    {
+        if(std::isdigit(ch) == 0)
+        {
+            confirmInt = false;
+        }
+        else
+        {
+            confirmInt = true;
+        }
+    }
+    if (confirmInt == true)
+    {
+        quantity = ui->quantityItemLineEdit->text().toInt();
+        ui->errorLabelFoodCity->setVisible(false);
 
-    prepQuery -> prepare("SELECT City FROM foodSheet WHERE Traditional_Food_Item = :item");
-    prepQuery -> bindValue(":item", item);
-    prepQuery -> exec();
-    prepQuery -> next();
 
-    total = quantity * itemPrice;
-    city = prepQuery -> value(0).toString();
+        ui->errorLabelFoodCity->setVisible(false);
 
-    activeQuery->prepare("INSERT INTO travelSale (cityPurchased, item, itemPrice, quantity, totalSale) VALUES (:cityPurchased, :item, :itemPrice, :quantity, :totalSale);");
-    activeQuery->bindValue(":cityPurchased", city);
-    activeQuery->bindValue(":item", item);
-    activeQuery->bindValue(":itemPrice", itemPrice);
-    activeQuery->bindValue(":quantity", quantity);
-    activeQuery->bindValue(":totalSale", total);
-    activeQuery->exec();
-    activeQuery->next();
+        searchQuery.exec("SELECT DISTINCT Traditional_Food_Item FROM foodSheet");
+        searchQryModel.setQuery(std::move(searchQuery));
+        int i = 0;
 
-    insertQuery->prepare("UPDATE totalAmountPerCity set totalAmountSpent = round((SELECT  SUM(totalSale) FROM travelSale WHERE cityPurchased = :city),2)  WHERE City = :city");
-    insertQuery->bindValue(":city", city);
-    insertQuery->exec();
-    insertQuery->next();
+        while (i < searchQryModel.rowCount() && !confirmString)
+        {
+            record = searchQryModel.record(i);
+            if (item == record.value(0).toString())
+            {
+                confirmString = true;
+            }
+            i++;
+        }
 
-    totalSaleQuery->exec("SELECT ROUND((SUM(totalSale)), 2) AS ROUNDVALUE FROM travelSale");
-    totalSaleQuery->next();
-    totalSaleString = totalSaleQuery->value(0).toString();
-    totalSaleString = "Total Amount Spent: " + totalSaleString;
+        if (confirmString == true)
+        {
+            prepQuery -> prepare("SELECT Cost FROM foodSheet WHERE Traditional_Food_Item = :item");
+            prepQuery -> bindValue(":item", item);
+            prepQuery -> exec();
+            prepQuery -> next();
 
-    totalAmountSpentQryModel->setQuery("SELECT City, totalAmountSpent FROM totalAmountPerCity");
-    receiptQryModel->setQuery("SELECT cityPurchased, item, itemPrice, quantity, totalSale FROM travelSale");
+            itemPrice = prepQuery->value(0).toDouble();
 
-    ui->receiptTabTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->receiptTabTableView->setAlternatingRowColors(true);
+            prepQuery -> prepare("SELECT City FROM foodSheet WHERE Traditional_Food_Item = :item");
+            prepQuery -> bindValue(":item", item);
+            prepQuery -> exec();
+            prepQuery -> next();
 
-    ui->totalAmountPerCityTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->totalAmountPerCityTableView->setAlternatingRowColors(true);
+            total = quantity * itemPrice;
+            city = prepQuery -> value(0).toString();
 
-    ui->receiptTabTableView->setModel(receiptQryModel);
-    ui->totalAmountPerCityTableView->setModel(totalAmountSpentQryModel);
-    ui->totalAmountSpentLabel->setText(totalSaleString);
+            activeQuery->prepare("INSERT INTO travelSale (cityPurchased, item, itemPrice, quantity, totalSale) VALUES (:cityPurchased, :item, :itemPrice, :quantity, :totalSale);");
+            activeQuery->bindValue(":cityPurchased", city);
+            activeQuery->bindValue(":item", item);
+            activeQuery->bindValue(":itemPrice", itemPrice);
+            activeQuery->bindValue(":quantity", quantity);
+            activeQuery->bindValue(":totalSale", total);
+            activeQuery->exec();
+            activeQuery->next();
+
+            insertQuery->prepare("UPDATE totalAmountPerCity set totalAmountSpent = round((SELECT  SUM(totalSale) FROM travelSale WHERE cityPurchased = :city),2)  WHERE City = :city");
+            insertQuery->bindValue(":city", city);
+            insertQuery->exec();
+            insertQuery->next();
+
+            totalSaleQuery->exec("SELECT ROUND((SUM(totalSale)), 2) AS ROUNDVALUE FROM travelSale");
+            totalSaleQuery->next();
+            totalSaleString = totalSaleQuery->value(0).toString();
+            totalSaleString = "Total Amount Spent: " + totalSaleString;
+
+            totalAmountSpentQryModel->setQuery("SELECT City, totalAmountSpent FROM totalAmountPerCity");
+            receiptQryModel->setQuery("SELECT cityPurchased, item, itemPrice, quantity, totalSale FROM travelSale");
+
+            ui->receiptTabTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+            ui->receiptTabTableView->setAlternatingRowColors(true);
+
+            ui->totalAmountPerCityTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+            ui->totalAmountPerCityTableView->setAlternatingRowColors(true);
+
+            ui->receiptTabTableView->setModel(receiptQryModel);
+            ui->totalAmountPerCityTableView->setModel(totalAmountSpentQryModel);
+            ui->totalAmountSpentLabel->setText(totalSaleString);
+        }
+        else
+        {
+            ui->errorLabelFoodCity->setVisible(true);
+            ui->errorLabelFoodCity->setText("Invalid Item: Please enter Item");
+        }
+
+    }
+    else
+    {
+        ui->errorLabelFoodCity->setVisible(true);
+        ui->errorLabelFoodCity->setText("Invalid quantity: Please enter Item");
+    }
+
 }
 
 
