@@ -160,27 +160,56 @@ void EuroMap::full_map_from_city(QString start, int numberOfCities)
                 }
             }
 
-            if (visited.size() != 11)
+            qDebug().noquote() << "COLAMNNNNNNNNNNSIZE: "<< int(visited.size());
+            if (numberOfCities == 11)
             {
-                for (int visitedTest = 0; visitedTest < int(visited.size()); visitedTest++)
+                if (visited.size() != 11)
                 {
-
-                    if (QString::fromStdString(current->city_signs[forLoopCityIteration] -> name) == QString::fromStdString(visited[visitedTest].name))
+                    for (int visitedTest = 0; visitedTest < int(visited.size()); visitedTest++)
                     {
 
+                        if (QString::fromStdString(current->city_signs[forLoopCityIteration] -> name) == QString::fromStdString(visited[visitedTest].name))
+                        {
 
-                         ++forLoopCityIteration;
-                         visitedTest = 0;
-                    }
-                    if (QString::fromStdString(current->city_signs[forLoopCityIteration] -> name) == start)
-                    {
-                         forLoopCityIteration++;
+
+                             ++forLoopCityIteration;
+                             visitedTest = 0;
+                        }
+                        if (QString::fromStdString(current->city_signs[forLoopCityIteration] -> name) == start)
+                        {
+                             forLoopCityIteration++;
+                        }
+
+                        qDebug().noquote() << " FINAL TEST: " << QString::fromStdString(visited[visitedTest].name) << "current: " << QString::fromStdString(current->city_signs[forLoopCityIteration] -> name);
                     }
 
-                    qDebug().noquote() << " FINAL TEST: " << QString::fromStdString(visited[visitedTest].name) << "current: " << QString::fromStdString(current->city_signs[forLoopCityIteration] -> name);
                 }
-
             }
+            else if (numberOfCities == 13)
+            {
+                if (visited.size() != 13)
+                {
+                    for (int visitedTest = 0; visitedTest < int(visited.size()); visitedTest++)
+                    {
+
+                        if (QString::fromStdString(current->city_signs[forLoopCityIteration] -> name) == QString::fromStdString(visited[visitedTest].name))
+                        {
+
+
+                             ++forLoopCityIteration;
+                             visitedTest = 0;
+                        }
+                        if (QString::fromStdString(current->city_signs[forLoopCityIteration] -> name) == start)
+                        {
+                             forLoopCityIteration++;
+                        }
+
+                        qDebug().noquote() << " FINAL TEST: " << QString::fromStdString(visited[visitedTest].name) << "current: " << QString::fromStdString(current->city_signs[forLoopCityIteration] -> name);
+                    }
+
+                }
+            }
+
             qDebug().noquote() << QString::fromStdString(temp);
         }
 

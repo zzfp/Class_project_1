@@ -278,9 +278,17 @@ void Admin::on_InitializeNewFoodsPushButton_clicked()
     {
         myDb = QSqlDatabase::addDatabase("QSQLITE");
     }
+    myDb.open();
+
+    if (!file.open(QIODevice::OpenModeFlag::ReadOnly))
+    {
+        qCritical()<<"please make sure that you put the .txt files in debug folder!";
+        qCritical()<<file.errorString();
+        return;
+    }
+
     QSqlQuery *newTableQuery = new QSqlQuery(myDb);
     QSqlQueryModel* qryModel = new QSqlQueryModel();
-    myDb.open();
 
     QString cityString;
     QString foodString;
@@ -289,19 +297,19 @@ void Admin::on_InitializeNewFoodsPushButton_clicked()
 
     while(!inFile.atEnd())
     {
-         QSqlQuery query;
-         query.prepare("INSERT INTO foodSheet(City, Traditional_Food_Item, Cost) VALUES (:City, :Food, :Cost)");
+        QSqlQuery query;
+        query.prepare("INSERT INTO foodSheet(City, Traditional_Food_Item, Cost) VALUES (:City, :Food, :Cost)");
 
-         cityString = inFile.readLine();
-         foodString = inFile.readLine();
-         costString = inFile.readLine();
-         costDouble = costString.toDouble();
+        cityString = inFile.readLine();
+        foodString = inFile.readLine();
+        costString = inFile.readLine();
+        costDouble = costString.toDouble();
 
-         query.bindValue(":City", cityString);
-         query.bindValue(":Food", foodString);
-         query.bindValue(":Cost", costDouble);
-         qDebug() << cityString << foodString << costDouble;
-         query.exec();
+        query.bindValue(":City", cityString);
+        query.bindValue(":Food", foodString);
+        query.bindValue(":Cost", costDouble);
+        qDebug() << cityString << foodString << costDouble;
+        query.exec();
 
      }
      file.close();
@@ -309,7 +317,7 @@ void Admin::on_InitializeNewFoodsPushButton_clicked()
 
      newTableQuery->exec("CREATE TABLE newFoodTable as SELECT City, Traditional_Food_Item, Cost FROM foodSheet ORDER BY City");
      newTableQuery->exec("DROP TABLE foodSheet");
-     newTableQuery->exec("ALTER TABLE newDistanceTable RENAME To foodSheet");
+     newTableQuery->exec("ALTER TABLE newFoodTable RENAME To foodSheet");
 
      ui->foodTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
      ui->foodTableView->setAlternatingRowColors(true);
