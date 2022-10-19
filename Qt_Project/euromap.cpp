@@ -131,7 +131,7 @@ void EuroMap::full_map_from_city(QString start, int numberOfCities)
 
         visited.push_back(*current);
 
-        for (int i = 0; i < num_of_cities - 1; i++)
+        for (int i = 0; i < numberOfCities - 1; i++)
         {
 
             qDebug().noquote() << "got to for loop";
@@ -160,14 +160,14 @@ void EuroMap::full_map_from_city(QString start, int numberOfCities)
                 }
             }
 
-            if (visited.size() != 11)
-            {
-                for (int visitedTest = 0; visitedTest < int(visited.size()); visitedTest++)
-                {
+            qDebug().noquote() << "COLAMNNNNNNNNNNSIZE: "<< int(visited.size());
 
+           if (visited.size() != numberOfCities)
+           {
+               for (int visitedTest = 0; visitedTest < int(visited.size()); visitedTest++)
+               {
                     if (QString::fromStdString(current->city_signs[forLoopCityIteration] -> name) == QString::fromStdString(visited[visitedTest].name))
                     {
-
 
                          ++forLoopCityIteration;
                          visitedTest = 0;
@@ -181,6 +181,8 @@ void EuroMap::full_map_from_city(QString start, int numberOfCities)
                 }
 
             }
+
+
             qDebug().noquote() << QString::fromStdString(temp);
         }
 
