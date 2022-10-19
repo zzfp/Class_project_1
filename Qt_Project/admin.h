@@ -39,6 +39,10 @@ private slots:
 
     void on_userWindowPushButton_clicked();
 
+    void on_editFoodButton_clicked();
+
+    void on_deleteFood_clicked();
+
 private:
     Ui::Admin *ui;
     QSqlDatabase myDb;

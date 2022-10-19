@@ -358,3 +358,79 @@ void Admin::on_userWindowPushButton_clicked()
     userWindow->show();
 }
 
+
+void Admin::on_editFoodButton_clicked()
+{
+    QString city = ui->cityLineEdit2->text();
+    QString food = ui->foodLineEdit->text();
+    QString cost = ui->costLineEdit->text();
+
+    if (city == "" || food == "" || cost == "")
+    {
+        QMessageBox::warning(this, "Empty field", "One of your fields is empty");
+    }
+
+    QSqlQuery query;
+    QSqlQueryModel* qryModel = new QSqlQueryModel();
+
+    query.prepare("UPDATE foodSheet SET Cost = (:Cost) WHERE City = (:City) AND Traditional_Food_Item = (:Food) ");
+    query.bindValue(":City", city);
+    query.bindValue(":Food", food);
+    query.bindValue(":Cost", cost);
+    query.exec();
+
+    if (!query.exec() )
+    {
+          QMessageBox::warning(this, "Query Error", "Query not executed");
+    }
+    else
+    {
+          QMessageBox::information(this, "City Successfully Added", "Success");
+    }
+
+    ui->foodTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->foodTableView->setAlternatingRowColors(true);
+
+    qryModel -> setQuery("SELECT foodSheet.City,foodSheet.Traditional_Food_Item as 'Traditional Food Item',foodSheet.Cost FROM foodSheet ORDER BY foodSheet.City");
+
+    ui->foodTableView->setModel(qryModel);
+
+
+}
+
+
+void Admin::on_deleteFood_clicked()
+{
+    QString city = ui->cityLineEdit2->text();
+    QString food = ui->foodLineEdit->text();
+
+    if (city == "" || food == "")
+    {
+        QMessageBox::warning(this, "Empty field", "One of your fields is empty");
+    }
+
+    QSqlQuery query;
+    QSqlQueryModel* qryModel = new QSqlQueryModel();
+
+    query.prepare("DELETE FROM foodSheet WHERE City = (:City) AND Traditional_Food_Item = (:Food) ");
+    query.bindValue(":City", city);
+    query.bindValue(":Food", food);
+    query.exec();
+
+    if (!query.exec() )
+    {
+          QMessageBox::warning(this, "Query Error", "Query not executed");
+    }
+    else
+    {
+          QMessageBox::information(this, "City Successfully Added", "Success");
+    }
+
+    ui->foodTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->foodTableView->setAlternatingRowColors(true);
+
+    qryModel -> setQuery("SELECT foodSheet.City,foodSheet.Traditional_Food_Item as 'Traditional Food Item',foodSheet.Cost FROM foodSheet ORDER BY foodSheet.City");
+
+    ui->foodTableView->setModel(qryModel);
+}
+

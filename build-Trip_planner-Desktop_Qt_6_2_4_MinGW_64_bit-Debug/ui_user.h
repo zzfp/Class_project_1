@@ -53,6 +53,7 @@ public:
     QHBoxLayout *horizontalLayout_6;
     QLineEdit *searchFoodItemLineEdit;
     QPushButton *searchFoodPushButton;
+    QLabel *searchErrorLabel;
     QHBoxLayout *horizontalLayout_8;
     QVBoxLayout *verticalLayout;
     QLabel *label_2;
@@ -67,7 +68,7 @@ public:
     QSpacerItem *horizontalSpacer_4;
     QPushButton *beginTripPushButton;
     QVBoxLayout *verticalLayout_11;
-    QLabel *label_8;
+    QLabel *validCityErrorBerlin;
     QVBoxLayout *verticalLayout_4;
     QHBoxLayout *horizontalLayout_10;
     QPushButton *berlin11CitiesPushButton;
@@ -84,14 +85,12 @@ public:
     QLabel *currentCityLineEdit;
     QSpacerItem *horizontalSpacer_6;
     QSpacerItem *verticalSpacer_3;
-    QVBoxLayout *verticalLayout_8;
     QHBoxLayout *horizontalLayout_4;
     QLineEdit *enterItemLineEdit;
     QLineEdit *quantityItemLineEdit;
     QSpacerItem *horizontalSpacer_3;
     QPushButton *addItemPushButton;
     QPushButton *nextCityPushButton;
-    QHBoxLayout *horizontalLayout_9;
     QHBoxLayout *horizontalLayout_5;
     QVBoxLayout *verticalLayout_5;
     QLabel *label_5;
@@ -111,7 +110,7 @@ public:
     QSpacerItem *horizontalSpacer_10;
     QPushButton *parisBeginTrip;
     QVBoxLayout *verticalLayout_13;
-    QLabel *label_11;
+    QLabel *parisWrongError;
     QVBoxLayout *verticalLayout_12;
     QHBoxLayout *horizontalLayout_11;
     QLineEdit *numberOfCitiesLineEdit;
@@ -128,6 +127,7 @@ public:
     QVBoxLayout *verticalLayout_14;
     QLabel *label_13;
     QTableView *customTripTableView;
+    QLabel *customTripErrorLabel;
     QHBoxLayout *horizontalLayout_14;
     QComboBox *citiesComboBox;
     QSpacerItem *horizontalSpacer_11;
@@ -229,6 +229,12 @@ public:
 
         verticalLayout_10->addLayout(horizontalLayout_6);
 
+        searchErrorLabel = new QLabel(page);
+        searchErrorLabel->setObjectName(QString::fromUtf8("searchErrorLabel"));
+        searchErrorLabel->setStyleSheet(QString::fromUtf8("color:rgb(255, 0, 0)"));
+
+        verticalLayout_10->addWidget(searchErrorLabel);
+
         horizontalLayout_8 = new QHBoxLayout();
         horizontalLayout_8->setObjectName(QString::fromUtf8("horizontalLayout_8"));
         verticalLayout = new QVBoxLayout();
@@ -295,10 +301,11 @@ public:
 
         verticalLayout_11 = new QVBoxLayout();
         verticalLayout_11->setObjectName(QString::fromUtf8("verticalLayout_11"));
-        label_8 = new QLabel(page_2);
-        label_8->setObjectName(QString::fromUtf8("label_8"));
+        validCityErrorBerlin = new QLabel(page_2);
+        validCityErrorBerlin->setObjectName(QString::fromUtf8("validCityErrorBerlin"));
+        validCityErrorBerlin->setStyleSheet(QString::fromUtf8("color: rgb(255, 0, 0)"));
 
-        verticalLayout_11->addWidget(label_8);
+        verticalLayout_11->addWidget(validCityErrorBerlin);
 
         verticalLayout_4 = new QVBoxLayout();
         verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
@@ -374,8 +381,6 @@ public:
 
         gridLayout_4->addLayout(verticalLayout_9, 0, 0, 1, 1);
 
-        verticalLayout_8 = new QVBoxLayout();
-        verticalLayout_8->setObjectName(QString::fromUtf8("verticalLayout_8"));
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
         enterItemLineEdit = new QLineEdit(page_3);
@@ -405,10 +410,8 @@ public:
         horizontalLayout_4->addWidget(nextCityPushButton);
 
 
-        verticalLayout_8->addLayout(horizontalLayout_4);
+        gridLayout_4->addLayout(horizontalLayout_4, 1, 0, 1, 1);
 
-        horizontalLayout_9 = new QHBoxLayout();
-        horizontalLayout_9->setObjectName(QString::fromUtf8("horizontalLayout_9"));
         horizontalLayout_5 = new QHBoxLayout();
         horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
         verticalLayout_5 = new QVBoxLayout();
@@ -441,9 +444,6 @@ public:
 
         horizontalLayout_5->addLayout(verticalLayout_6);
 
-
-        horizontalLayout_9->addLayout(horizontalLayout_5);
-
         verticalLayout_7 = new QVBoxLayout();
         verticalLayout_7->setObjectName(QString::fromUtf8("verticalLayout_7"));
         label_7 = new QLabel(page_3);
@@ -457,23 +457,20 @@ public:
         verticalLayout_7->addWidget(totalAmountPerCityTableView);
 
 
-        horizontalLayout_9->addLayout(verticalLayout_7);
+        horizontalLayout_5->addLayout(verticalLayout_7);
 
 
-        verticalLayout_8->addLayout(horizontalLayout_9);
-
-
-        gridLayout_4->addLayout(verticalLayout_8, 1, 0, 1, 1);
+        gridLayout_4->addLayout(horizontalLayout_5, 2, 0, 1, 1);
 
         totalAmountSpentLabel = new QLabel(page_3);
         totalAmountSpentLabel->setObjectName(QString::fromUtf8("totalAmountSpentLabel"));
 
-        gridLayout_4->addWidget(totalAmountSpentLabel, 2, 0, 1, 1);
+        gridLayout_4->addWidget(totalAmountSpentLabel, 3, 0, 1, 1);
 
         totalDistanceTraveledLabel = new QLabel(page_3);
         totalDistanceTraveledLabel->setObjectName(QString::fromUtf8("totalDistanceTraveledLabel"));
 
-        gridLayout_4->addWidget(totalDistanceTraveledLabel, 3, 0, 1, 1);
+        gridLayout_4->addWidget(totalDistanceTraveledLabel, 4, 0, 1, 1);
 
         travelStackedWidget->addWidget(page_3);
         parisPage = new QWidget();
@@ -503,10 +500,11 @@ public:
 
         verticalLayout_13 = new QVBoxLayout();
         verticalLayout_13->setObjectName(QString::fromUtf8("verticalLayout_13"));
-        label_11 = new QLabel(parisPage);
-        label_11->setObjectName(QString::fromUtf8("label_11"));
+        parisWrongError = new QLabel(parisPage);
+        parisWrongError->setObjectName(QString::fromUtf8("parisWrongError"));
+        parisWrongError->setStyleSheet(QString::fromUtf8("color:rgb(255, 0, 0)"));
 
-        verticalLayout_13->addWidget(label_11);
+        verticalLayout_13->addWidget(parisWrongError);
 
         verticalLayout_12 = new QVBoxLayout();
         verticalLayout_12->setObjectName(QString::fromUtf8("verticalLayout_12"));
@@ -583,6 +581,12 @@ public:
 
         verticalLayout_16->addLayout(horizontalLayout_15);
 
+        customTripErrorLabel = new QLabel(customTripPage);
+        customTripErrorLabel->setObjectName(QString::fromUtf8("customTripErrorLabel"));
+        customTripErrorLabel->setStyleSheet(QString::fromUtf8("color:rgb(255, 0, 0)"));
+
+        verticalLayout_16->addWidget(customTripErrorLabel);
+
         horizontalLayout_14 = new QHBoxLayout();
         horizontalLayout_14->setObjectName(QString::fromUtf8("horizontalLayout_14"));
         citiesComboBox = new QComboBox(customTripPage);
@@ -656,11 +660,12 @@ public:
         searchFoodItemLineEdit->setText(QString());
         searchFoodItemLineEdit->setPlaceholderText(QCoreApplication::translate("user", "Search by City for food items", nullptr));
         searchFoodPushButton->setText(QCoreApplication::translate("user", "Search Food", nullptr));
+        searchErrorLabel->setText(QString());
         label_2->setText(QCoreApplication::translate("user", "Distances from Rome", nullptr));
         label_3->setText(QCoreApplication::translate("user", "Food items for: ", nullptr));
         label_4->setText(QCoreApplication::translate("user", "Berlin Trip", nullptr));
         beginTripPushButton->setText(QCoreApplication::translate("user", "Begin Trip", nullptr));
-        label_8->setText(QCoreApplication::translate("user", "TextLabel", nullptr));
+        validCityErrorBerlin->setText(QString());
         berlin11CitiesPushButton->setText(QCoreApplication::translate("user", "11 Cities", nullptr));
         label_9->setText(QCoreApplication::translate("user", "Select Amount of Cities", nullptr));
         berlin13CitiesPushButton->setText(QCoreApplication::translate("user", "13 Cities", nullptr));
@@ -678,12 +683,13 @@ public:
         totalDistanceTraveledLabel->setText(QCoreApplication::translate("user", "Total Distance Traveled:", nullptr));
         label_10->setText(QCoreApplication::translate("user", "Paris Trip", nullptr));
         parisBeginTrip->setText(QCoreApplication::translate("user", "Begin Trip", nullptr));
-        label_11->setText(QCoreApplication::translate("user", "TextLabel", nullptr));
+        parisWrongError->setText(QString());
         numberOfCitiesLineEdit->setText(QString());
         numberOfCitiesLineEdit->setPlaceholderText(QCoreApplication::translate("user", "Enter Number of Cities", nullptr));
         addParisCitiesPushButton->setText(QCoreApplication::translate("user", "Add Number of Cities", nullptr));
         label_12->setText(QCoreApplication::translate("user", "Cities Available", nullptr));
         label_13->setText(QCoreApplication::translate("user", "Trip Selections", nullptr));
+        customTripErrorLabel->setText(QString());
         addCustomCityPushButton->setText(QCoreApplication::translate("user", "Add City", nullptr));
         finalizeTripCustomCityPushButton->setText(QCoreApplication::translate("user", "Finalize Trip", nullptr));
         beginTripCustomCityPushButton->setText(QCoreApplication::translate("user", "Begin Trip", nullptr));
