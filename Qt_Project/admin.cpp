@@ -8,13 +8,11 @@ Admin::Admin(QWidget *parent) :
 {
    ui->setupUi(this);
 
-   QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-   db.setDatabaseName("./Project.db");//This line and the previous connect to the sqlite database at this file location,
-   db.open();                                                                  //the .db file should be kept within the repository for now
+                                                                    //the .db file should be kept within the repository for now
 
    QSqlQueryModel * model = new QSqlQueryModel();
   //model is readonly access to query results
-   QSqlQuery query(db);
+   QSqlQuery query;
    query.prepare("SELECT * FROM distanceSheet");
 
    query.exec(); //query must be active before being moved into the model
@@ -23,7 +21,7 @@ Admin::Admin(QWidget *parent) :
    ui->tableView->setModel(model);
 
    QSqlQueryModel * model2 = new QSqlQueryModel();
-   QSqlQuery query2(db);
+   QSqlQuery query2;
 
    query2.prepare("SELECT * FROM foodSheet");
 
@@ -40,15 +38,11 @@ Admin::~Admin()
 
 void Admin::refreshCityTable()
 {
-   ui->setupUi(this);
-
-   QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-   db.setDatabaseName("./Project.db");//This line and the previous connect to the sqlite database at this file location,
-   db.open();                                                                  //the .db file should be kept within the repository for now
+   ui->setupUi(this);                                                               //the .db file should be kept within the repository for now
 
    QSqlQueryModel * model = new QSqlQueryModel();
   //model is readonly access to query results
-   QSqlQuery query(db);
+   QSqlQuery query;
    query.prepare("SELECT * FROM distanceSheet");
 
    query.exec(); //query must be active before being moved into the model
@@ -57,7 +51,7 @@ void Admin::refreshCityTable()
    ui->tableView->setModel(model);
 
    QSqlQueryModel * model2 = new QSqlQueryModel();
-   QSqlQuery query2(db);
+   QSqlQuery query2;
 
    query2.prepare("SELECT * FROM foodSheet");
 
@@ -77,17 +71,8 @@ void Admin::on_addCityButton_clicked()
      {
          QMessageBox::warning(this, "Empty field", "One of your fields is empty");
      }
-     else
-     {
-         QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-         db.setDatabaseName("./Project.db");
-         if (db.open()){
-             qDebug().noquote() << "db found and open";
-         }
-         else{
-             qDebug().noquote() << "db not found";
-         }
-         QSqlQuery query(db);
+
+         QSqlQuery query;
 
          query.prepare("INSERT INTO distanceSheet(Starting_City, Ending_City, Distance) VALUES (:Starting, :Ending, :Distance)");
          query.bindValue(":Starting", startCity);
@@ -105,7 +90,7 @@ void Admin::on_addCityButton_clicked()
 
          }
 
-     }
+
 
    refreshCityTable();
 
@@ -116,15 +101,11 @@ void Admin::on_addCityButton_clicked()
 void Admin::on_uploadFile_clicked()
 {
    QFile file("./NewCities.txt");
-   QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-   db.setDatabaseName("./Project.db");//This line and the previous connect to the sqlite database at this file location,
-   db.open();
-   if (!file.open(QIODevice::ReadOnly)) {
-           qDebug() << file.errorString();
-       }
-
-       if (!file.open(QIODevice::ReadOnly)) {
-           qDebug() << file.errorString();
+   if (!file.open(QIODevice::OpenModeFlag::ReadOnly))
+       {
+           qCritical()<<"please make sure that you put the .txt files in debug folder!";
+           qCritical()<<file.errorString();
+           return;
        }
 
        QString startString;
@@ -159,29 +140,20 @@ void Admin::on_uploadFile_clicked()
 
 void Admin::on_addFoodButton_clicked()
 {
-    QString city = ui->cityLineEdit->text();
-    QString food = ui->endingCityLineEdit->text();
-    QString cost = ui->kilometerLineEdit->text();
+    QString city = ui->cityLineEdit2->text();
+    QString food = ui->foodLineEdit->text();
+    QString cost = ui->costLineEdit->text();
     if (city == "" || food == "" || cost == "")
       {
           QMessageBox::warning(this, "Empty field", "One of your fields is empty");
       }
-      else
-      {
-          QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-          db.setDatabaseName("./Project.db");
-          if (db.open()){
-              qDebug().noquote() << "db found and open";
-          }
-          else{
-              qDebug().noquote() << "db not found";
-          }
-          QSqlQuery query(db);
 
-          query.prepare("INSERT INTO distanceSheet(Starting_City, Ending_City, Distance) VALUES (:Starting, :Ending, :Distance)");
-          query.bindValue(":Starting", city);
-          query.bindValue(":Ending", food);
-          query.bindValue(":Distance", cost);
+          QSqlQuery query;
+
+          query.prepare("INSERT INTO foodSheet(City, Traditional_Food_Item, Cost) VALUES (:City, :Food, :Cost)");
+          query.bindValue(":City", city);
+          query.bindValue(":Food", food);
+          query.bindValue(":Cost", cost);
 
           if (!query.exec() )
           {
@@ -194,7 +166,7 @@ void Admin::on_addFoodButton_clicked()
 
           }
 
-      }
+
 
     refreshCityTable();
 }
@@ -203,38 +175,39 @@ void Admin::on_addFoodButton_clicked()
 void Admin::on_uploadFile2_clicked()
 {
     QFile file("./NewFoods.txt");
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("./Project.db");//This line and the previous connect to the sqlite database at this file location,
-    db.open();
-    if (!file.open(QIODevice::ReadOnly)) {
-            qDebug() << file.errorString();
-        }
-
-        if (!file.open(QIODevice::ReadOnly)) {
-            qDebug() << file.errorString();
+    if (!file.open(QIODevice::OpenModeFlag::ReadOnly))
+        {
+            qCritical()<<"please make sure that you put the .txt files in debug folder!";
+            qCritical()<<file.errorString();
+            return;
         }
 
         QString cityString;
         QString foodString;
         QString costString;
+        double costDouble;
 
         while(!file.atEnd())
             {
                 QSqlQuery query;
-                query.prepare("INSERT INTO foodSheet(City, Traditional_Food_Item, Cost) VALUES (:city :food, :cost)");
+                query.prepare("INSERT INTO foodSheet(City, Traditional_Food_Item, Cost) VALUES (:City :Food, :Cost)");
 
                 cityString = file.readLine();
                 foodString = file.readLine();
                 costString = file.readLine();
+                costDouble = costString.toDouble();
 
 
-                query.bindValue(":city", cityString);
-                query.bindValue(":food", foodString);
-                query.bindValue(":cost", costString.toDouble());
-                qDebug() << cityString << foodString << costString;
+                query.bindValue(":City", cityString);
+                query.bindValue(":Food", foodString);
+                query.bindValue(":Cost", costDouble);
+                qDebug() << cityString << foodString << costDouble;
                 query.exec();
 
-                query.lastQuery();
+                if (!query.exec())
+                    qDebug() << "Query did not execute";
+
+
 
             }
             file.close();
