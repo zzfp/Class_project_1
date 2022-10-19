@@ -47,6 +47,8 @@ private slots:
 
     void on_beginTripCustomCityPushButton_clicked();
 
+    void on_berlin13CitiesPushButton_clicked();
+
 private:
     Ui::user *ui;
     QSqlDatabase myDb;
@@ -56,6 +58,9 @@ private:
     int count = 1;
     int addCity = 0;
     int nextCityCheck;
+    bool notClicked = true;
+    bool parisNotClicked = true;
+    bool customTripNotClicked = true;
 };
 
 #endif // USER_H
