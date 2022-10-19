@@ -130,7 +130,7 @@ void customTripMap::fullMap(QString start, int numberOfCities)
 
     visited.push_back(*current);
 
-    for (int i = 0; i < num_of_cities - 1; i++)
+    for (int i = 0; i < numberOfCities - 1; i++)
     {
 
         visited.push_back(*current->city_signs[forLoopCityIteration]);
