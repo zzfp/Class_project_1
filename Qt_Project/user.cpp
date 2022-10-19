@@ -53,6 +53,7 @@ void user::on_distanceAndFoodPushButton_clicked()
         ui->enterItemLineEdit->setText("");
         ui->quantityItemLineEdit->setText("");
         ui->numberOfCitiesLineEdit->setText("");
+        ui->searchErrorLabel->setVisible(false);
     }
 
 }
@@ -317,6 +318,12 @@ void user::on_nextCityPushButton_clicked()
     if (count == nextCityCheck)
     {
        ui->travelStackedWidget->setCurrentIndex(0);
+       notClicked = true;
+       parisNotClicked = true;
+       customTripNotClicked = true;
+       count = 1;
+       addCity = 0;
+       ui->searchErrorLabel->setVisible(false);
     }
 
     QSqlDatabase myDb;
@@ -518,7 +525,8 @@ void user::on_addParisCitiesPushButton_clicked()
         ui->parisWrongError->setVisible(false);
 
         EuroMap map;
-        map.full_map_from_city("Paris", amountOfCities);
+        QString paris = "Paris";
+        map.full_map_from_city(paris, amountOfCities);
         nextCityCheck = amountOfCities;
 
         ui->parisTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
