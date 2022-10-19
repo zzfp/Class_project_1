@@ -150,6 +150,16 @@
            </layout>
           </item>
           <item>
+           <widget class="QLabel" name="searchErrorLabel">
+            <property name="styleSheet">
+             <string notr="true">color:rgb(255, 0, 0)</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_8">
             <item>
              <layout class="QVBoxLayout" name="verticalLayout">
@@ -227,9 +237,12 @@
         <item row="1" column="0">
          <layout class="QVBoxLayout" name="verticalLayout_11">
           <item>
-           <widget class="QLabel" name="label_8">
+           <widget class="QLabel" name="validCityErrorBerlin">
+            <property name="styleSheet">
+             <string notr="true">color: rgb(255, 0, 0)</string>
+            </property>
             <property name="text">
-             <string>TextLabel</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -355,124 +368,116 @@
          </layout>
         </item>
         <item row="1" column="0">
-         <layout class="QVBoxLayout" name="verticalLayout_8">
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <widget class="QLineEdit" name="enterItemLineEdit">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="placeholderText">
+             <string>Enter Item</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="quantityItemLineEdit">
+            <property name="mouseTracking">
+             <bool>true</bool>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="placeholderText">
+             <string>Enter Quantity</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="addItemPushButton">
+            <property name="text">
+             <string>Add item</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="nextCityPushButton">
+            <property name="text">
+             <string>Next City</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="2" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
-             <widget class="QLineEdit" name="enterItemLineEdit">
+             <widget class="QLabel" name="label_5">
               <property name="text">
-               <string/>
-              </property>
-              <property name="placeholderText">
-               <string>Enter Item</string>
+               <string>Current City</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="quantityItemLineEdit">
-              <property name="mouseTracking">
-               <bool>true</bool>
-              </property>
-              <property name="autoFillBackground">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="placeholderText">
-               <string>Enter Quantity</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QPushButton" name="addItemPushButton">
-              <property name="text">
-               <string>Add item</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="nextCityPushButton">
-              <property name="text">
-               <string>Next City</string>
-              </property>
-             </widget>
+             <widget class="QTableView" name="currentCityTableView"/>
             </item>
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_5">
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_5">
-                <item>
-                 <widget class="QLabel" name="label_5">
-                  <property name="text">
-                   <string>Current City</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QTableView" name="currentCityTableView"/>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_6">
-                <item>
-                 <widget class="QLabel" name="label_6">
-                  <property name="text">
-                   <string>Receipt Tab</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QTableView" name="receiptTabTableView"/>
-                </item>
-               </layout>
-              </item>
-             </layout>
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>Receipt Tab</string>
+              </property>
+             </widget>
             </item>
             <item>
-             <layout class="QVBoxLayout" name="verticalLayout_7">
-              <item>
-               <widget class="QLabel" name="label_7">
-                <property name="text">
-                 <string>Total Amount Spent Per City</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QTableView" name="totalAmountPerCityTableView"/>
-              </item>
-             </layout>
+             <widget class="QTableView" name="receiptTabTableView"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <item>
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>Total Amount Spent Per City</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QTableView" name="totalAmountPerCityTableView"/>
             </item>
            </layout>
           </item>
          </layout>
         </item>
-        <item row="2" column="0">
+        <item row="3" column="0">
          <widget class="QLabel" name="totalAmountSpentLabel">
           <property name="text">
            <string>Total Amount Spent:</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
+        <item row="4" column="0">
          <widget class="QLabel" name="totalDistanceTraveledLabel">
           <property name="text">
            <string>Total Distance Traveled:</string>
@@ -523,9 +528,12 @@
         <item row="1" column="0">
          <layout class="QVBoxLayout" name="verticalLayout_13">
           <item>
-           <widget class="QLabel" name="label_11">
+           <widget class="QLabel" name="parisWrongError">
+            <property name="styleSheet">
+             <string notr="true">color:rgb(255, 0, 0)</string>
+            </property>
             <property name="text">
-             <string>TextLabel</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -612,6 +620,16 @@
              </layout>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="customTripErrorLabel">
+            <property name="styleSheet">
+             <string notr="true">color:rgb(255, 0, 0)</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_14">
